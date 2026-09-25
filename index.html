@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FormuLab — Интерактивный справочник-тренажер формул для экзаменов</title>
-  <meta name="description" content="Интерактивный справочник формул по физике и математике с динамическими графиками, визуализациями и генератором задач на 1 клик для подготовки к ЕГЭ/ОГЭ." />
+  <title>FormuLab — Интерактивный атлас формул для подготовки к ҰБТ / ЕНТ</title>
+  <meta name="description" content="Интерактивный справочник формул по физике и математике с динамическими графиками и тренажером задач для подготовки к ҰБТ / ЕНТ." />
 
-  <!-- Fonts -->
+  <!-- Typography: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=display" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -22,37 +22,34 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Custom Stylesheet -->
+  <!-- Notion / Minimalist Stylesheet -->
   <link rel="stylesheet" href="styles/styles.css" />
 </head>
 <body>
 
-  <!-- Sticky Application Header -->
+  <!-- Minimalist Header -->
   <header class="app-header">
     <div class="brand">
-      <div class="brand-logo"><i class="fa-solid fa-atom"></i></div>
-      <div>
-        <span class="brand-title">FormuLab</span>
-        <span class="brand-badge">MVP</span>
-      </div>
+      <div class="brand-logo"><i class="fa-solid fa-shapes"></i></div>
+      <span class="brand-title">FormuLab</span>
     </div>
 
-    <!-- User Progress & Analytics Pill -->
+    <!-- User Stats (Clean Notion Badges) -->
     <div class="user-stats-bar">
       <div class="stat-item" title="Текущая серия правильных ответов">
         <i class="fa-solid fa-fire stat-icon-streak"></i>
         <span>Серия: <strong id="stat-streak">0</strong></span>
       </div>
       <div class="stat-item" title="Всего решено задач">
-        <i class="fa-solid fa-circle-check stat-icon-solved"></i>
+        <i class="fa-solid fa-check stat-icon-solved"></i>
         <span>Решено: <strong id="stat-solved">0</strong></span>
       </div>
-      <div class="stat-item" title="Процент правильных ответов">
+      <div class="stat-item" title="Процент точности">
         <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
         <span>Точность: <strong id="stat-accuracy">100%</strong></span>
       </div>
       <button id="btn-theme-toggle" class="btn-icon" title="Сменить тему">
-        <i class="fa-solid fa-sun"></i>
+        <i class="fa-solid fa-moon"></i>
       </button>
     </div>
   </header>
@@ -60,35 +57,37 @@
   <!-- Main Container -->
   <main class="main-content">
     
-    <!-- Hero Banner -->
+    <!-- Minimalist Hero Section -->
     <section class="hero-section">
-      <h1 class="hero-title">Понимай формулы. Решай на максимумах.</h1>
+      <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">📐</div>
+      <h1 class="hero-title">Интерактивті формулалар атласы</h1>
       <p class="hero-subtitle">
-        Интерактивная лаборатория формул по физике и математике (включая пособия П.Т. Рустюмова для подготовки к <strong>ЕНТ</strong>). Двигай слайдеры, смотри графики в реальном времени и генерируй задачи в 1 клик.
+        Физика мен математика пәндері бойынша негізгі формулалар жинағы (ҰБТ • ЕНТ Рустюмов бойынша). Слайдерлерді жылжытып, графикті бақылаңыз және 1 кликпен есептер генераторында біліміңізді бекітіңіз.
       </p>
 
-      <!-- Controls & Search Filter Bar -->
+      <!-- Controls & Filter Bar -->
       <div class="controls-bar">
+        <!-- Search Box -->
         <div class="search-box">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
           <input
             type="text"
             id="search-input"
             class="search-input"
-            placeholder="Поиск формулы по названию, теме, ЕНТ или LaTeX..."
+            placeholder="Формула бойынша іздеу (мысалы: Ньютон, Пифагор, Ом заңы, прогрессия, cos)..."
           />
         </div>
 
-        <!-- Subject Filter Tabs -->
+        <!-- Subject Navigation Tabs -->
         <div class="tabs-container">
-          <button class="subject-tab active" data-subject="all">Все предметы</button>
+          <button class="subject-tab active" data-subject="all">Барлық пәндер</button>
           <button class="subject-tab" data-subject="physics"><i class="fa-solid fa-bolt"></i> Физика</button>
-          <button class="subject-tab" data-subject="math"><i class="fa-solid fa-calculator"></i> Математика (ЕНТ)</button>
+          <button class="subject-tab" data-subject="math"><i class="fa-solid fa-calculator"></i> Математика (ҰБТ)</button>
         </div>
 
-        <!-- Topics Pills -->
+        <!-- Topic Pills -->
         <div class="topics-row">
-          <button class="topic-pill active" data-topic="all">Все темы</button>
+          <button class="topic-pill active" data-topic="all">Барлық тақырыптар</button>
           <button class="topic-pill" data-topic="Алгебра">Алгебра</button>
           <button class="topic-pill" data-topic="Геометрия">Геометрия</button>
           <button class="topic-pill" data-topic="Тригонометрия">Тригонометрия</button>
@@ -107,26 +106,30 @@
 
   <!-- Formula Laboratory Modal -->
   <div id="formula-lab-modal" class="modal-overlay">
-    <div class="modal-content glass-panel">
-      <button class="modal-close" title="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-content">
+      <button class="modal-close" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-body"></div>
     </div>
   </div>
 
   <!-- Practice / Problem Generator Modal -->
   <div id="practice-modal" class="modal-overlay">
-    <div class="modal-content glass-panel">
-      <button class="modal-close" title="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-content">
+      <button class="modal-close" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-body"></div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Minimalist Footer -->
   <footer class="app-footer">
-    <p>© 2026 FormuLab MVP — Справочник-тренажер нового поколения.</p>
-    <p style="margin-top: 0.5rem; font-size: 0.85rem;">
-      <a href="https://t.me" target="_blank" style="color: var(--accent-secondary); text-decoration: none;">
-        <i class="fa-paper-plane fa-brands"></i> Оставить отзыв в Telegram
+    <p>FormuLab — ҰБТ мен емтихандарға арналған интерактивті формулалар платформасы.</p>
+    <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+      <a href="https://github.com/Akniet009/edtech" target="_blank">
+        <i class="fa-brands fa-github"></i> GitHub репозиторийі
+      </a>
+      &nbsp;•&nbsp;
+      <a href="https://edtech-delta-seven.vercel.app" target="_blank">
+        <i class="fa-solid fa-globe"></i> Vercel Live
       </a>
     </p>
   </footer>

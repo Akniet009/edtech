@@ -144,19 +144,10 @@ def generate_task(formula_id: str):
             ]
         )
 
-    # Fallback for other formulas
-    return TaskResponse(
-        formula_id=formula_id,
-        formula_title="Динамический генератор",
-        latex_formula=r"y = f(x)",
-        question=f"Сгенерирована стандартная задача для модуля {formula_id}.",
-        target_symbol="x",
-        correct_answer=42.0,
-        unit="",
-        solution_steps=[
-            "**Шаг 1:** Вычислите стандартное значение по формуле.",
-            "**Шаг 2:** Ответ равняется 42."
-        ]
+    # If formula is not recognized by backend SymPy solver
+    raise HTTPException(
+        status_code=404,
+        detail=f"Формула '{formula_id}' табылмады немесе әлі қосылмаған."
     )
 
 if __name__ == "__main__":

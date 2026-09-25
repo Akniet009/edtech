@@ -140,10 +140,10 @@ export class Catalog {
 
         <div class="card-footer">
           <button class="btn btn-outline btn-open-lab">
-            <i class="fa-solid fa-flask-vial"></i> Интерактивный лаб
+            <i class="fa-solid fa-sliders"></i> Зертхана
           </button>
           <button class="btn btn-primary btn-quick-practice">
-            <i class="fa-solid fa-bolt"></i> Тренажер
+            <i class="fa-solid fa-pen-to-square"></i> Есеп шығару
           </button>
         </div>
       </div>
