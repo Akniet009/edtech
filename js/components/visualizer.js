@@ -26,6 +26,7 @@ export class Visualizer {
       case 'energy_bar':
       case 'power_chart':
       case 'heat_chart':
+      case 'trig_wave':
       case 'log_graph':
       case 'exp_graph':
         this.renderChart(containerEl, formula, varValues);
@@ -257,6 +258,77 @@ export class Visualizer {
           }
         }
       };
+    } else if (type === 'trig_wave') {
+      const A = varValues.A ?? 1;
+      const omega = varValues.omega ?? 1;
+      const labels = [];
+      const dataPoints = [];
+      for (let deg = 0; deg <= 360; deg += 15) {
+        const rad = (deg * Math.PI) / 180;
+        labels.push(deg + '°');
+        dataPoints.push(Number((A * Math.sin(omega * rad)).toFixed(3)));
+      }
+
+      chartConfig = {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: `y = ${A} · sin(${omega}α)`,
+            data: dataPoints,
+            borderColor: '#a855f7',
+            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#e2e8f0' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      };
+    } else if (type === 'heat_chart') {
+      const c = varValues.c ?? 4200;
+      const m = varValues.m ?? 2;
+      const dt = varValues['\\Delta t'] ?? varValues.dt ?? 20;
+
+      const labels = [];
+      const dataPoints = [];
+      for (let t = 0; t <= dt; t += Math.max(1, Math.round(dt / 8))) {
+        labels.push(t + '°C');
+        dataPoints.push(Number(((c * m * t) / 1000).toFixed(1)));
+      }
+
+      chartConfig = {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Теплота Q(Δt) [кДж]',
+            data: dataPoints,
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#e2e8f0' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      };
     } else {
       // Default plot fallback
       chartConfig = {
@@ -470,6 +542,208 @@ export class Visualizer {
       ctx.fillStyle = '#ef4444';
       ctx.font = 'bold 14px Outfit, sans-serif';
       ctx.fillText(`F_упр = ${F} Н`, blockX - 40, 120);
+
+    } else if (type === 'circle_geometry') {
+      const R = varValues.R ?? 5;
+      const S = (Math.PI * R * R).toFixed(1);
+      const L = (2 * Math.PI * R).toFixed(1);
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const drawR = Math.min(85, Math.max(30, R * 8));
+
+      // Draw Circle Area
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.15)';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, drawR, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Draw Outline
+      ctx.strokeStyle = '#06b6d4';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Radius line
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + drawR, centerY);
+      ctx.stroke();
+
+      // Center point
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Labels
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 13px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`R = ${R} см`, centerX + drawR / 2, centerY - 10);
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '14px Outfit, sans-serif';
+      ctx.fillText(`S = πR² ≈ ${S} см²`, centerX, height - 20);
+      ctx.fillText(`L = 2πR ≈ ${L} см`, centerX, 25);
+
+    } else if (type === 'general_triangle') {
+      const a = varValues.a ?? 5;
+      const b = varValues.b ?? 6;
+      const gamma = varValues.gamma ?? varValues.alpha ?? 60;
+      const S = (0.5 * a * b * Math.sin((gamma * Math.PI) / 180)).toFixed(1);
+
+      const startX = 100;
+      const startY = 180;
+      const scale = 14;
+
+      const pA = { x: startX, y: startY };
+      const pB = { x: startX + Math.min(220, a * scale), y: startY };
+      const rad = (gamma * Math.PI) / 180;
+      const pC = {
+        x: startX + Math.min(180, b * scale * Math.cos(rad)),
+        y: startY - Math.min(140, b * scale * Math.sin(rad))
+      };
+
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.15)';
+      ctx.beginPath();
+      ctx.moveTo(pA.x, pA.y);
+      ctx.lineTo(pB.x, pB.y);
+      ctx.lineTo(pC.x, pC.y);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = '#a855f7';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = '13px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`a = ${a}`, (pA.x + pB.x) / 2, pA.y + 20);
+      ctx.fillText(`b = ${b}`, (pA.x + pC.x) / 2 - 20, (pA.y + pC.y) / 2);
+      ctx.fillText(`γ = ${gamma}°`, pA.x + 25, pA.y - 10);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 14px Outfit, sans-serif';
+      ctx.fillText(`S = ½ab·sinγ ≈ ${S}`, width / 2, 25);
+
+    } else if (type === 'coulomb_charges') {
+      const q1 = varValues.q_1 ?? varValues.q1 ?? 2;
+      const q2 = varValues.q_2 ?? varValues.q2 ?? -3;
+      const r = varValues.r ?? 0.5;
+
+      const isRepel = (q1 * q2) > 0;
+      const c1X = 120;
+      const c2X = 340;
+      const cy = 120;
+
+      // Charge 1
+      ctx.fillStyle = q1 >= 0 ? '#ef4444' : '#3b82f6';
+      ctx.beginPath();
+      ctx.arc(c1X, cy, 25, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 15px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${q1 > 0 ? '+' : ''}${q1} мкКл`, c1X, cy + 5);
+
+      // Charge 2
+      ctx.fillStyle = q2 >= 0 ? '#ef4444' : '#3b82f6';
+      ctx.beginPath();
+      ctx.arc(c2X, cy, 25, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`${q2 > 0 ? '+' : ''}${q2} мкКл`, c2X, cy + 5);
+
+      // Distance line
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(c1X + 25, cy);
+      ctx.lineTo(c2X - 25, cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillText(`r = ${r} м`, (c1X + c2X) / 2, cy - 10);
+
+      // Force vectors
+      if (isRepel) {
+        this.drawArrow(ctx, c1X - 25, cy, c1X - 75, cy, '#ec4899', 3);
+        this.drawArrow(ctx, c2X + 25, cy, c2X + 75, cy, '#ec4899', 3);
+        ctx.fillStyle = '#ec4899';
+        ctx.fillText('Отталкивание', width / 2, height - 20);
+      } else {
+        this.drawArrow(ctx, c1X + 25, cy, c1X + 65, cy, '#10b981', 3);
+        this.drawArrow(ctx, c2X - 25, cy, c2X - 65, cy, '#10b981', 3);
+        ctx.fillStyle = '#10b981';
+        ctx.fillText('Притяжение', width / 2, height - 20);
+      }
+
+    } else if (type === 'optics_lens') {
+      const F = varValues.F ?? 10;
+      const d = varValues.d ?? 20;
+      const f = (1 / ((1 / F) - (1 / d))).toFixed(1);
+
+      const lensX = width / 2;
+      const axisY = height / 2;
+
+      // Optical Axis
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(20, axisY);
+      ctx.lineTo(width - 20, axisY);
+      ctx.stroke();
+
+      // Convex Lens Line
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(lensX, 30);
+      ctx.lineTo(lensX, height - 30);
+      ctx.stroke();
+
+      // Focal points
+      const scaleF = 5;
+      const fx1 = lensX - F * scaleF;
+      const fx2 = lensX + F * scaleF;
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(fx1, axisY, 4, 0, 2 * Math.PI);
+      ctx.arc(fx2, axisY, 4, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.font = '12px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('F', fx1, axisY + 18);
+      ctx.fillText('F', fx2, axisY + 18);
+
+      // Object arrow (Left)
+      const objX = lensX - Math.min(180, d * scaleF);
+      this.drawArrow(ctx, objX, axisY, objX, axisY - 50, '#10b981', 3);
+      ctx.fillStyle = '#10b981';
+      ctx.fillText(`Предмет d=${d}см`, objX, axisY - 60);
+
+      // Image arrow (Right)
+      if (f > 0) {
+        const imgX = lensX + Math.min(180, f * scaleF);
+        this.drawArrow(ctx, imgX, axisY, imgX, axisY + 50, '#ec4899', 3);
+        ctx.fillStyle = '#ec4899';
+        ctx.fillText(`Изображение f=${f}см`, imgX, axisY + 68);
+      }
 
     } else {
       // General Canvas Diagram fallback
