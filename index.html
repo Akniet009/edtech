@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormuLab — Интерактивный справочник-тренажер формул для экзаменов</title>
+  <meta name="description" content="Интерактивный справочник формул по физике и математике с динамическими графиками, визуализациями и генератором задач на 1 клик для подготовки к ЕГЭ/ОГЭ." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=display" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles/styles.css" />
+</head>
+<body>
+
+  <!-- Sticky Application Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo"><i class="fa-solid fa-atom"></i></div>
+      <div>
+        <span class="brand-title">FormuLab</span>
+        <span class="brand-badge">MVP</span>
+      </div>
+    </div>
+
+    <!-- User Progress & Analytics Pill -->
+    <div class="user-stats-bar">
+      <div class="stat-item" title="Текущая серия правильных ответов">
+        <i class="fa-solid fa-fire stat-icon-streak"></i>
+        <span>Серия: <strong id="stat-streak">0</strong></span>
+      </div>
+      <div class="stat-item" title="Всего решено задач">
+        <i class="fa-solid fa-circle-check stat-icon-solved"></i>
+        <span>Решено: <strong id="stat-solved">0</strong></span>
+      </div>
+      <div class="stat-item" title="Процент правильных ответов">
+        <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
+        <span>Точность: <strong id="stat-accuracy">100%</strong></span>
+      </div>
+      <button id="btn-theme-toggle" class="btn-icon" title="Сменить тему">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Hero Banner -->
+    <section class="hero-section">
+      <h1 class="hero-title">Понимай формулы. Решай на максимумах.</h1>
+      <p class="hero-subtitle">
+        Интерактивная лаборатория формул по физике и математике (включая пособия П.Т. Рустюмова для подготовки к <strong>ЕНТ</strong>). Двигай слайдеры, смотри графики в реальном времени и генерируй задачи в 1 клик.
+      </p>
+
+      <!-- Controls & Search Filter Bar -->
+      <div class="controls-bar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input
+            type="text"
+            id="search-input"
+            class="search-input"
+            placeholder="Поиск формулы по названию, теме, ЕНТ или LaTeX..."
+          />
+        </div>
+
+        <!-- Subject Filter Tabs -->
+        <div class="tabs-container">
+          <button class="subject-tab active" data-subject="all">Все предметы</button>
+          <button class="subject-tab" data-subject="physics"><i class="fa-solid fa-bolt"></i> Физика</button>
+          <button class="subject-tab" data-subject="math"><i class="fa-solid fa-calculator"></i> Математика (ЕНТ)</button>
+        </div>
+
+        <!-- Topics Pills -->
+        <div class="topics-row">
+          <button class="topic-pill active" data-topic="all">Все темы</button>
+          <button class="topic-pill" data-topic="Алгебра">Алгебра</button>
+          <button class="topic-pill" data-topic="Геометрия">Геометрия</button>
+          <button class="topic-pill" data-topic="Тригонометрия">Тригонометрия</button>
+          <button class="topic-pill" data-topic="Механика">Механика</button>
+          <button class="topic-pill" data-topic="Электродинамика">Электродинамика</button>
+          <button class="topic-pill" data-topic="Термодинамика">Термодинамика</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulas Catalog Grid -->
+    <section id="catalog-grid" class="formula-grid"></section>
+
+  </main>
+
+  <!-- Formula Laboratory Modal -->
+  <div id="formula-lab-modal" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <button class="modal-close" title="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Practice / Problem Generator Modal -->
+  <div id="practice-modal" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <button class="modal-close" title="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>© 2026 FormuLab MVP — Справочник-тренажер нового поколения.</p>
+    <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+      <a href="https://t.me" target="_blank" style="color: var(--accent-secondary); text-decoration: none;">
+        <i class="fa-paper-plane fa-brands"></i> Оставить отзыв в Telegram
+      </a>
+    </p>
+  </footer>
+
+  <!-- Application Logic JS -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>
