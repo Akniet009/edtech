@@ -23,7 +23,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Notion / Minimalist Stylesheet -->
-  <link rel="stylesheet" href="styles/styles.css?v=2.7" />
+  <link rel="stylesheet" href="styles/styles.css?v=2.8" />
 </head>
 <body>
 
@@ -47,6 +47,12 @@
       <div class="stat-item" data-i18n-title="accuracyTitle" title="Дұрыс жауап беру дәлдігі">
         <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
         <span><span data-i18n="statAccuracy">Дәлдік:</span> <strong id="stat-accuracy">100%</strong></span>
+      </div>
+
+      <!-- Mistakes Bank Button -->
+      <div class="stat-item stat-item-mistakes" id="btn-open-mistakes" data-i18n-title="mistakesTitle" title="Қателермен жұмыс банкі" role="button" tabindex="0" onclick="window.openMistakesBank && window.openMistakesBank()">
+        <i class="fa-solid fa-triangle-exclamation stat-icon-mistakes"></i>
+        <span><span data-i18n="statMistakes">Қателер:</span> <strong id="stat-mistakes-count">0</strong></span>
       </div>
 
       <!-- User Gamification Level & XP Badge -->
@@ -216,6 +222,14 @@
     </div>
   </div>
 
+  <!-- Mistakes Bank Modal («Қателермен жұмыс») -->
+  <div id="mistakes-modal" class="modal-overlay">
+    <div class="modal-content modal-mistakes">
+      <button class="modal-close" data-i18n-title="closeBtnTitle" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
   <!-- Floating Achievement Unlock Toast Container -->
   <div id="achievement-toast-container" class="achievement-toast-container"></div>
 
@@ -234,7 +248,7 @@
   </footer>
 
   <!-- Application Logic JS -->
-  <script type="module" src="js/app.js?v=2.7"></script>
+  <script type="module" src="js/app.js?v=2.8"></script>
 
 </body>
 </html>

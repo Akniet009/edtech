@@ -4,6 +4,7 @@
 import { MathEngine } from '../engine/mathEngine.js';
 import { I18n } from '../i18n.js';
 import { Gamification } from './gamification.js';
+import { MistakesBank } from './mistakes.js';
 
 export class Practice {
   static modalEl = null;
@@ -224,6 +225,15 @@ export class Practice {
       this.stats.solvedCount++;
       this.stats.streak = 0; // reset streak
       this.saveStats();
+
+      // Record mistake in MistakesBank
+      if (this.currentFormula && this.currentTask) {
+        MistakesBank.recordPracticeMistake({
+          formula: this.currentFormula,
+          task: this.currentTask,
+          userAnswer: res.userNum
+        });
+      }
 
       // Trigger gamification on wrong answer
       if (this.currentFormula) {

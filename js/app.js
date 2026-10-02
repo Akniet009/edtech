@@ -5,6 +5,7 @@ import { FormulaLab } from './components/formulaLab.js';
 import { Practice } from './components/practice.js';
 import { Quiz } from './components/quiz.js';
 import { Gamification } from './components/gamification.js';
+import { MistakesBank } from './components/mistakes.js';
 import { I18n } from './i18n.js';
 
 // Expose globals immediately for onclick attributes and console access
@@ -12,6 +13,7 @@ window.Quiz = Quiz;
 window.Practice = Practice;
 window.FormulaLab = FormulaLab;
 window.Gamification = Gamification;
+window.MistakesBank = MistakesBank;
 window.startUNTExam = (subject = 'all', count = 10, duration = 10) => {
   Quiz.ensureModal();
   Quiz.startQuickExam(subject, count, duration);
@@ -22,6 +24,9 @@ window.openUNTExamSetup = () => {
 };
 window.openAchievements = () => {
   Gamification.openModal();
+};
+window.openMistakesBank = () => {
+  MistakesBank.open();
 };
 
 const initApp = () => {
@@ -80,6 +85,10 @@ const initApp = () => {
     if (Gamification.modalEl && Gamification.modalEl.classList.contains('active')) {
       Gamification.renderModal();
     }
+    MistakesBank.updateHeaderBadge();
+    if (MistakesBank.modalEl && MistakesBank.modalEl.classList.contains('active')) {
+      MistakesBank.renderModal();
+    }
   });
 
   // Initialize Gamification component
@@ -91,6 +100,23 @@ const initApp = () => {
     btnOpenAchievements.addEventListener('click', (e) => {
       e.preventDefault();
       Gamification.openModal();
+    });
+  }
+
+  // Initialize Mistakes Bank component
+  const mistakesModalEl = document.getElementById('mistakes-modal');
+  MistakesBank.init(
+    mistakesModalEl,
+    (formula) => FormulaLab.open(formula),
+    (formula) => Practice.open(formula),
+    updateStatsUI
+  );
+
+  const btnOpenMistakes = document.getElementById('btn-open-mistakes');
+  if (btnOpenMistakes) {
+    btnOpenMistakes.addEventListener('click', (e) => {
+      e.preventDefault();
+      MistakesBank.open();
     });
   }
 

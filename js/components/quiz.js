@@ -5,6 +5,7 @@ import { MathEngine } from '../engine/mathEngine.js';
 import { I18n } from '../i18n.js';
 import { FORMULAS_DATA } from '../data/formulas.js';
 import { Gamification } from './gamification.js';
+import { MistakesBank } from './mistakes.js';
 
 export class Quiz {
   static modalEl = null;
@@ -567,6 +568,9 @@ export class Quiz {
       accuracy,
       elapsedSeconds
     });
+
+    // Record any missed questions into MistakesBank
+    MistakesBank.recordExamMistakes(this.questions, this.userAnswers);
 
     this.renderScorecard(total, correctCount, accuracy, elapsedSeconds, isTimeUp);
   }
