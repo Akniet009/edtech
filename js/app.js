@@ -4,12 +4,14 @@ import { Catalog } from './components/catalog.js';
 import { FormulaLab } from './components/formulaLab.js';
 import { Practice } from './components/practice.js';
 import { Quiz } from './components/quiz.js';
+import { Gamification } from './components/gamification.js';
 import { I18n } from './i18n.js';
 
 // Expose globals immediately for onclick attributes and console access
 window.Quiz = Quiz;
 window.Practice = Practice;
 window.FormulaLab = FormulaLab;
+window.Gamification = Gamification;
 window.startUNTExam = (subject = 'all', count = 10, duration = 10) => {
   Quiz.ensureModal();
   Quiz.startQuickExam(subject, count, duration);
@@ -17,6 +19,9 @@ window.startUNTExam = (subject = 'all', count = 10, duration = 10) => {
 window.openUNTExamSetup = () => {
   Quiz.ensureModal();
   Quiz.openSetup();
+};
+window.openAchievements = () => {
+  Gamification.openModal();
 };
 
 const initApp = () => {
@@ -71,7 +76,23 @@ const initApp = () => {
     if (Practice.currentFormula && practiceModalEl && practiceModalEl.classList.contains('active')) {
       Practice.generateNewTask();
     }
+    Gamification.updateHeaderUI();
+    if (Gamification.modalEl && Gamification.modalEl.classList.contains('active')) {
+      Gamification.renderModal();
+    }
   });
+
+  // Initialize Gamification component
+  const achievementsModalEl = document.getElementById('achievements-modal');
+  Gamification.init(achievementsModalEl);
+
+  const btnOpenAchievements = document.getElementById('btn-open-achievements');
+  if (btnOpenAchievements) {
+    btnOpenAchievements.addEventListener('click', (e) => {
+      e.preventDefault();
+      Gamification.openModal();
+    });
+  }
 
   // Initialize Practice component with stats callback
   Practice.init(practiceModalEl, updateStatsUI);

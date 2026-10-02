@@ -23,7 +23,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Notion / Minimalist Stylesheet -->
-  <link rel="stylesheet" href="styles/styles.css?v=2.6" />
+  <link rel="stylesheet" href="styles/styles.css?v=2.7" />
 </head>
 <body>
 
@@ -47,6 +47,17 @@
       <div class="stat-item" data-i18n-title="accuracyTitle" title="Дұрыс жауап беру дәлдігі">
         <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
         <span><span data-i18n="statAccuracy">Дәлдік:</span> <strong id="stat-accuracy">100%</strong></span>
+      </div>
+
+      <!-- User Gamification Level & XP Badge -->
+      <div class="stat-item stat-item-xp" id="btn-open-achievements" data-i18n-title="achievementsTitle" title="Жетістіктер мен деңгейлерді көру" role="button" tabindex="0" onclick="window.openAchievements && window.openAchievements()">
+        <span class="level-badge" id="user-level-badge">LVL 1</span>
+        <div class="xp-progress-bar-container">
+          <div class="xp-text"><span id="user-xp">0</span> / <span id="user-next-xp">100</span> XP</div>
+          <div class="xp-bar-track">
+            <div class="xp-bar-fill" id="user-xp-bar" style="width: 0%;"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Bilingual Language Switcher -->
@@ -197,6 +208,17 @@
     </div>
   </div>
 
+  <!-- Gamification / Achievements & Badges Modal -->
+  <div id="achievements-modal" class="modal-overlay">
+    <div class="modal-content modal-achievements">
+      <button class="modal-close" data-i18n-title="closeBtnTitle" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Floating Achievement Unlock Toast Container -->
+  <div id="achievement-toast-container" class="achievement-toast-container"></div>
+
   <!-- Minimalist Footer -->
   <footer class="app-footer">
     <p data-i18n="footerText">FormuLab — ҰБТ мен емтихандарға арналған интерактивті формулалар платформасы.</p>
@@ -212,7 +234,7 @@
   </footer>
 
   <!-- Application Logic JS -->
-  <script type="module" src="js/app.js?v=2.6"></script>
+  <script type="module" src="js/app.js?v=2.7"></script>
 
 </body>
 </html>

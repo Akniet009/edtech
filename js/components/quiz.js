@@ -4,6 +4,7 @@
 import { MathEngine } from '../engine/mathEngine.js';
 import { I18n } from '../i18n.js';
 import { FORMULAS_DATA } from '../data/formulas.js';
+import { Gamification } from './gamification.js';
 
 export class Quiz {
   static modalEl = null;
@@ -558,6 +559,14 @@ export class Quiz {
 
     // Update global app stats
     this.updateGlobalStats(total, correctCount);
+
+    // Trigger gamification XP & achievements
+    Gamification.onExamCompleted({
+      total,
+      correct: correctCount,
+      accuracy,
+      elapsedSeconds
+    });
 
     this.renderScorecard(total, correctCount, accuracy, elapsedSeconds, isTimeUp);
   }

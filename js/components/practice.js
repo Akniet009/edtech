@@ -3,6 +3,7 @@
 
 import { MathEngine } from '../engine/mathEngine.js';
 import { I18n } from '../i18n.js';
+import { Gamification } from './gamification.js';
 
 export class Practice {
   static modalEl = null;
@@ -194,6 +195,17 @@ export class Practice {
       this.stats.streak++;
       this.saveStats();
 
+      // Trigger gamification XP & badge unlocks
+      if (this.currentFormula) {
+        Gamification.onProblemSolved({
+          formulaId: this.currentFormula.id,
+          subject: this.currentFormula.subject,
+          topic: this.currentFormula.topic,
+          isCorrect: true,
+          streak: this.stats.streak
+        });
+      }
+
     } else {
       feedbackEl.className = 'feedback-area feedback-wrong';
       const unitStr = this.currentTask.unit ? ` ${this.currentTask.unit}` : '';
@@ -212,6 +224,17 @@ export class Practice {
       this.stats.solvedCount++;
       this.stats.streak = 0; // reset streak
       this.saveStats();
+
+      // Trigger gamification on wrong answer
+      if (this.currentFormula) {
+        Gamification.onProblemSolved({
+          formulaId: this.currentFormula.id,
+          subject: this.currentFormula.subject,
+          topic: this.currentFormula.topic,
+          isCorrect: false,
+          streak: 0
+        });
+      }
     }
   }
 

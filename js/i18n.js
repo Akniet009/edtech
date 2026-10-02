@@ -15,6 +15,8 @@ export const UI_TRANSLATIONS = {
     streakTitle: "Үздіксіз дұрыс жауаптар сериясы",
     solvedTitle: "Жалпы шешілген есептер саны",
     accuracyTitle: "Дұрыс жауап беру дәлдігі",
+    achievementsTitle: "Жетістіктер мен деңгейлерді көру",
+    achievementsModalTitle: "Жетістіктер мен Дәрежелер",
     themeToggleTitle: "Тақырыпты ауыстыру (күндізгі/түнгі)",
 
     // Subject navigation
@@ -122,6 +124,8 @@ export const UI_TRANSLATIONS = {
     streakTitle: "Текущая серия правильных ответов",
     solvedTitle: "Всего решено задач",
     accuracyTitle: "Процент точности",
+    achievementsTitle: "Посмотреть достижения и уровни",
+    achievementsModalTitle: "Достижения и Звания",
     themeToggleTitle: "Сменить тему (светлая/темная)",
 
     // Subject navigation
