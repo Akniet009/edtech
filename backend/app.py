@@ -25,6 +25,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Prevent aggressive browser caching during development
+@app.middleware("http")
+async def add_no_cache_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
 FRONTEND_DIR = Path(__file__).resolve().parent.parent
 
 # Serve static assets for web interface
@@ -73,10 +82,12 @@ def api_status():
     }
 
 @app.get("/api/v1/generate-task/{formula_id}", response_model=TaskResponse)
-def generate_task(formula_id: str):
+def generate_task(formula_id: str, lang: str = "kz"):
     """
-    Generate a dynamic task using SymPy symbolic mathematics.
+    Generate a dynamic task using SymPy symbolic mathematics with KZ / RU language localization.
     """
+    is_kz = (lang.lower() == "kz")
+
     if formula_id == "kinematics_motion":
         # s = v0 * t + (a * t^2)/2
         s, v0, a, t = sp.symbols('s v_0 a t')
@@ -88,20 +99,36 @@ def generate_task(formula_id: str):
         
         calculated_s = float(expr.subs({v0: v0_val, a: a_val, t: t_val}))
         
-        return TaskResponse(
-            formula_id=formula_id,
-            formula_title="Равноускоренное движение",
-            latex_formula=r"s = v_0 t + \frac{a t^2}{2}",
-            question=f"Автомобиль стартует с начальной скоростью v₀ = {v0_val} м/с и двигается с ускорением a = {a_val} м/с². Найдите перемещение s за t = {t_val} с.",
-            target_symbol="s",
-            correct_answer=calculated_s,
-            unit="м",
-            solution_steps=[
-                r"**Шаг 1:** Используем формулу $s = v_0 t + \frac{a t^2}{2}$",
-                f"**Шаг 2:** Вычислим произведения: $v_0 t = {v0_val * t_val}$, $\\frac{{a t^2}}{{2}} = \\frac{{{a_val} \\cdot {t_val**2}}}{{2}} = {0.5 * a_val * t_val**2}$",
-                f"**Шаг 3:** Итоговое значение $s = {calculated_s}\\text{{ м}}$"
-            ]
-        )
+        if is_kz:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Бірқалыпты үдемелі қозғалыс",
+                latex_formula=r"s = v_0 t + \frac{a t^2}{2}",
+                question=f"Автокөлік v₀ = {v0_val} м/с бастапқы жылдамдықпен және a = {a_val} м/с² үдеумен қозғала бастады. t = {t_val} с ішіндегі орын ауыстыруды (s) табыңыз.",
+                target_symbol="s",
+                correct_answer=calculated_s,
+                unit="м",
+                solution_steps=[
+                    r"**1-қадам:** $s = v_0 t + \frac{a t^2}{2}$ формуласын қолданамыз",
+                    f"**2-қадам:** Көбейтінділерді есептейміз: $v_0 t = {v0_val * t_val}$, $\\frac{{a t^2}}{{2}} = \\frac{{{a_val} \\cdot {t_val**2}}}{{2}} = {0.5 * a_val * t_val**2}$",
+                    f"**3-қадам:** Қорытынды нәтиже: $s = {calculated_s}\\text{{ м}}$"
+                ]
+            )
+        else:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Равноускоренное движение",
+                latex_formula=r"s = v_0 t + \frac{a t^2}{2}",
+                question=f"Автомобиль стартует с начальной скоростью v₀ = {v0_val} м/с и двигается с ускорением a = {a_val} м/с². Найдите перемещение s за t = {t_val} с.",
+                target_symbol="s",
+                correct_answer=calculated_s,
+                unit="м",
+                solution_steps=[
+                    r"**Шаг 1:** Используем формулу $s = v_0 t + \frac{a t^2}{2}$",
+                    f"**Шаг 2:** Вычислим произведения: $v_0 t = {v0_val * t_val}$, $\\frac{{a t^2}}{{2}} = \\frac{{{a_val} \\cdot {t_val**2}}}{{2}} = {0.5 * a_val * t_val**2}$",
+                    f"**Шаг 3:** Итоговое значение $s = {calculated_s}\\text{{ м}}$"
+                ]
+            )
 
     elif formula_id == "newton_second_law":
         # F = m * a
@@ -110,19 +137,34 @@ def generate_task(formula_id: str):
         a_val = random.randint(1, 10)
         calculated_F = float(m_val * a_val)
 
-        return TaskResponse(
-            formula_id=formula_id,
-            formula_title="Второй закон Ньютона",
-            latex_formula=r"F = m a",
-            question=f"Тело массой m = {m_val} кг движется с ускорением a = {a_val} м/с². Определите действующую силу F.",
-            target_symbol="F",
-            correct_answer=calculated_F,
-            unit="Н",
-            solution_steps=[
-                r"**Шаг 1:** Запишем второй закон Ньютона: $F = m \cdot a$",
-                f"**Шаг 2:** Вычислим: $F = {m_val} \\cdot {a_val} = {calculated_F}\\text{{ Н}}$"
-            ]
-        )
+        if is_kz:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Ньютонның екінші заңы",
+                latex_formula=r"F = m a",
+                question=f"Массасы m = {m_val} кг дене a = {a_val} м/с² үдеумен қозғалады. Денеге әсер ететін F күшін анықтаңыз.",
+                target_symbol="F",
+                correct_answer=calculated_F,
+                unit="Н",
+                solution_steps=[
+                    r"**1-қадам:** Ньютонның екінші заңы: $F = m \cdot a$",
+                    f"**2-қадам:** Есептейміз: $F = {m_val} \\cdot {a_val} = {calculated_F}\\text{{ Н}}$"
+                ]
+            )
+        else:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Второй закон Ньютона",
+                latex_formula=r"F = m a",
+                question=f"Тело массой m = {m_val} кг движется с ускорением a = {a_val} м/с². Определите действующую силу F.",
+                target_symbol="F",
+                correct_answer=calculated_F,
+                unit="Н",
+                solution_steps=[
+                    r"**Шаг 1:** Запишем второй закон Ньютона: $F = m \cdot a$",
+                    f"**Шаг 2:** Вычислим: $F = {m_val} \\cdot {a_val} = {calculated_F}\\text{{ Н}}$"
+                ]
+            )
 
     elif formula_id == "ohm_law":
         # I = U / R
@@ -130,25 +172,39 @@ def generate_task(formula_id: str):
         R_val = random.randint(2, 10)
         calculated_I = round(U_val / R_val, 2)
 
-        return TaskResponse(
-            formula_id=formula_id,
-            formula_title="Закон Ома для участка цепи",
-            latex_formula=r"I = \frac{U}{R}",
-            question=f"Напряжение в цепи U = {U_val} В, а сопротивление R = {R_val} Ом. Чему равна сила тока I?",
-            target_symbol="I",
-            correct_answer=calculated_I,
-            unit="А",
-            solution_steps=[
-                r"**Шаг 1:** Формула закона Ома: $I = \frac{U}{R}$",
-                f"**Шаг 2:** Вычислим: $I = \\frac{{{U_val}}}{{{R_val}}} = {calculated_I}\\text{{ А}}$"
-            ]
-        )
+        if is_kz:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Тізбек бөлігі үшін Ом заңы",
+                latex_formula=r"I = \frac{U}{R}",
+                question=f"Тізбектегі кернеу U = {U_val} В, ал кедергі R = {R_val} Ом. Ток күші I неге тең?",
+                target_symbol="I",
+                correct_answer=calculated_I,
+                unit="А",
+                solution_steps=[
+                    r"**1-қадам:** Ом заңының формуласы: $I = \frac{U}{R}$",
+                    f"**2-қадам:** Есептейміз: $I = \\frac{{{U_val}}}{{{R_val}}} = {calculated_I}\\text{{ А}}$"
+                ]
+            )
+        else:
+            return TaskResponse(
+                formula_id=formula_id,
+                formula_title="Закон Ома для участка цепи",
+                latex_formula=r"I = \frac{U}{R}",
+                question=f"Напряжение в цепи U = {U_val} В, а сопротивление R = {R_val} Ом. Чему равна сила тока I?",
+                target_symbol="I",
+                correct_answer=calculated_I,
+                unit="А",
+                solution_steps=[
+                    r"**Шаг 1:** Формула закона Ома: $I = \frac{U}{R}$",
+                    f"**Шаг 2:** Вычислим: $I = \\frac{{{U_val}}}{{{R_val}}} = {calculated_I}\\text{{ А}}$"
+                ]
+            )
 
     # If formula is not recognized by backend SymPy solver
-    raise HTTPException(
-        status_code=404,
-        detail=f"Формула '{formula_id}' табылмады немесе әлі қосылмаған."
-    )
+    err_msg = f"Формула '{formula_id}' табылмады немесе әлі қосылмаған." if is_kz else f"Формула '{formula_id}' не найдена или еще не добавлена."
+    raise HTTPException(status_code=404, detail=err_msg)
+
 
 if __name__ == "__main__":
     import uvicorn

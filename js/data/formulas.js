@@ -23,6 +23,7 @@ export const FORMULAS_DATA = [
     ],
     targetVariable: { symbol: "a", name: "Ускорение", unit: "м/с²" },
     calculate: () => 0,
+    renderSubstituted: (v) => `\\sum \\vec{F} = \\mathbf{${v['F_{\\text{рез}}'] ?? 0}}\\text{ Н} \\implies v = \\mathbf{${v.v ?? 15}}\\text{ м/с} = \\text{const}`,
     visualizationType: "force_vector",
     taskGenerator: () => {
       const v = Math.floor(Math.random() * 20) + 5;
@@ -110,6 +111,7 @@ export const FORMULAS_DATA = [
     ],
     targetVariable: { symbol: "F_{21}", name: "Сила противодействия", unit: "Н" },
     calculate: (F12) => F12,
+    renderSubstituted: (v) => `|\\vec{F}_{12}| = \\mathbf{${v['F_{12}'] ?? 50}}\\text{ Н} \\implies |\\vec{F}_{21}| = \\mathbf{${v['F_{12}'] ?? 50}}\\text{ Н}`,
     visualizationType: "force_vector",
     taskGenerator: () => {
       const F1 = Math.floor(Math.random() * 80) + 20; // 20..100 N

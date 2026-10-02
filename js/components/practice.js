@@ -2,6 +2,7 @@
 // Handles 1-click problem generation, answer verification, step-by-step solution breakdown, and streak updates
 
 import { MathEngine } from '../engine/mathEngine.js';
+import { I18n } from '../i18n.js';
 
 export class Practice {
   static modalEl = null;
@@ -64,14 +65,15 @@ export class Practice {
     if (!task) return;
 
     const modalBody = this.modalEl.querySelector('.modal-body');
+    const isKz = I18n.getLanguage() === 'kz';
 
     modalBody.innerHTML = `
       <div class="practice-card">
         <div class="practice-header">
           <span class="badge badge-accent">
-            <i class="fa-solid fa-bolt"></i> Генератор задач • ${task.formulaTitle}
+            <i class="fa-solid fa-bolt"></i> ${I18n.t('practiceBadge')} • ${task.formulaTitle}
           </span>
-          <h2 class="practice-title">Закрепление материала на практике</h2>
+          <h2 class="practice-title">${I18n.t('practiceTitle')}</h2>
         </div>
 
         <!-- Task Statement -->
@@ -83,18 +85,18 @@ export class Practice {
         <!-- Input & Submit Form -->
         <form id="practice-form" class="practice-input-group">
           <div class="input-wrapper">
-            <label class="input-label">Ваш ответ (${task.targetSymbol}${task.unit ? ', ' + task.unit : ''}):</label>
+            <label class="input-label">${I18n.t('yourAnswer')} (${task.targetSymbol}${task.unit ? ', ' + task.unit : ''}):</label>
             <div class="input-row">
               <input
                 type="text"
                 id="user-answer-input"
                 class="custom-text-input"
-                placeholder="Например: 42 или 3.5"
+                placeholder="${I18n.t('answerPlaceholder')}"
                 autocomplete="off"
                 required
               />
               <button type="submit" class="btn btn-primary btn-check">
-                <i class="fa-solid fa-paper-plane"></i> Проверить
+                <i class="fa-solid fa-paper-plane"></i> ${I18n.t('checkBtn')}
               </button>
             </div>
           </div>
@@ -106,16 +108,16 @@ export class Practice {
         <!-- Buttons Row -->
         <div class="practice-actions">
           <button id="btn-show-solution" class="btn btn-outline" style="display: inline-flex;">
-            <i class="fa-solid fa-eye"></i> Показать пошаговый разбор
+            <i class="fa-solid fa-eye"></i> ${isKz ? 'Қадамдық шешу жолы' : 'Показать пошаговый разбор'}
           </button>
           <button id="btn-next-task" class="btn btn-secondary">
-            <i class="fa-solid fa-arrows-rotate"></i> Сгенерировать еще одну задачу
+            <i class="fa-solid fa-arrows-rotate"></i> ${isKz ? 'Басқа есеп шығару' : 'Сгенерировать еще одну задачу'}
           </button>
         </div>
 
         <!-- Step-by-Step Solution Collapse -->
         <div id="solution-container" class="solution-box glass-panel" style="display: none;">
-          <h4 class="solution-title"><i class="fa-solid fa-list-check"></i> Пошаговый разбор решения:</h4>
+          <h4 class="solution-title"><i class="fa-solid fa-list-check"></i> ${I18n.t('solutionTitle')}:</h4>
           <div id="solution-steps-list" class="solution-steps"></div>
         </div>
       </div>
@@ -127,7 +129,8 @@ export class Practice {
         delimiters: [
           { left: "$$", right: "$$", display: true },
           { left: "$", right: "$", display: false }
-        ]
+        ],
+        throwOnError: false
       });
     }
 
@@ -164,20 +167,25 @@ export class Practice {
     if (!input || !feedbackEl) return;
 
     const res = MathEngine.verifyAnswer(input.value, this.currentTask.correctAnswer);
+    const isKz = I18n.getLanguage() === 'kz';
 
     feedbackEl.style.display = 'block';
 
     if (res.error) {
       feedbackEl.className = 'feedback-area feedback-error';
-      feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${res.error}`;
+      feedbackEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${I18n.t('invalidNumberError')}`;
       return;
     }
 
     if (res.isCorrect) {
       feedbackEl.className = 'feedback-area feedback-success';
+      const unitStr = this.currentTask.unit ? ` ${this.currentTask.unit}` : '';
       feedbackEl.innerHTML = `
-        <div class="feedback-badge"><i class="fa-solid fa-circle-check"></i> Верно! Отличная работа!</div>
-        <p>Ваш ответ <strong>${res.userNum}</strong> совпадает с эталонным <strong>${res.correctAnswer} ${this.currentTask.unit}</strong>.</p>
+        <div class="feedback-badge"><i class="fa-solid fa-circle-check"></i> ${I18n.t('correctFeedback')}</div>
+        <p>${isKz
+          ? `Сіздің жауабыңыз: <strong>${res.userNum}</strong> (дұрыс мән: <strong>${res.correctAnswer}${unitStr}</strong>).`
+          : `Ваш ответ <strong>${res.userNum}</strong> совпадает с эталонным <strong>${res.correctAnswer}${unitStr}</strong>.`
+        }</p>
       `;
 
       // Update student stats
@@ -188,10 +196,17 @@ export class Practice {
 
     } else {
       feedbackEl.className = 'feedback-area feedback-wrong';
+      const unitStr = this.currentTask.unit ? ` ${this.currentTask.unit}` : '';
       feedbackEl.innerHTML = `
-        <div class="feedback-badge"><i class="fa-solid fa-circle-xmark"></i> Почти получилось!</div>
-        <p>Ваш ответ: <strong>${res.userNum}</strong>. Правильный ответ: <strong>${res.correctAnswer} ${this.currentTask.unit}</strong>.</p>
-        <p class="feedback-hint">Нажмите «Показать пошаговый разбор», чтобы найти ошибку в вычислениях.</p>
+        <div class="feedback-badge"><i class="fa-solid fa-circle-xmark"></i> ${isKz ? 'Қате болды' : 'Почти получилось!'}</div>
+        <p>${isKz
+          ? `Сіздің жауабыңыз: <strong>${res.userNum}</strong>. Дұрыс жауап: <strong>${res.correctAnswer}${unitStr}</strong>.`
+          : `Ваш ответ: <strong>${res.userNum}</strong>. Правильный ответ: <strong>${res.correctAnswer}${unitStr}</strong>.`
+        }</p>
+        <p class="feedback-hint">${isKz
+          ? 'Қатені табу үшін «Қадамдық шешу жолы» батырмасын басыңыз.'
+          : 'Нажмите «Показать пошаговый разбор», чтобы найти ошибку в вычислениях.'
+        }</p>
       `;
 
       this.stats.solvedCount++;
@@ -221,7 +236,8 @@ export class Practice {
           delimiters: [
             { left: "$$", right: "$$", display: true },
             { left: "$", right: "$", display: false }
-          ]
+          ],
+          throwOnError: false
         });
       }
     } else {

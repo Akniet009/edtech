@@ -3,12 +3,28 @@
 import { Catalog } from './components/catalog.js';
 import { FormulaLab } from './components/formulaLab.js';
 import { Practice } from './components/practice.js';
+import { Quiz } from './components/quiz.js';
+import { I18n } from './i18n.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+// Expose globals immediately for onclick attributes and console access
+window.Quiz = Quiz;
+window.Practice = Practice;
+window.FormulaLab = FormulaLab;
+window.startUNTExam = (subject = 'all', count = 10, duration = 10) => {
+  Quiz.ensureModal();
+  Quiz.startQuickExam(subject, count, duration);
+};
+window.openUNTExamSetup = () => {
+  Quiz.ensureModal();
+  Quiz.openSetup();
+};
+
+const initApp = () => {
   // UI Containers
   const catalogGridEl = document.getElementById('catalog-grid');
   const labModalEl = document.getElementById('formula-lab-modal');
   const practiceModalEl = document.getElementById('practice-modal');
+  const examModalEl = document.getElementById('exam-modal');
   const searchInputEl = document.getElementById('search-input');
 
   // Stats elements
@@ -16,8 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statAccuracyEl = document.getElementById('stat-accuracy');
   const statStreakEl = document.getElementById('stat-streak');
 
-  // Initialize Practice component with stats callback
-  Practice.init(practiceModalEl, (stats) => {
+  const updateStatsUI = (stats) => {
     if (statSolvedEl) statSolvedEl.textContent = stats.solvedCount;
     if (statStreakEl) statStreakEl.textContent = stats.streak;
 
@@ -27,7 +42,70 @@ document.addEventListener('DOMContentLoaded', () => {
         : 100;
       statAccuracyEl.textContent = `${accuracy}%`;
     }
+  };
+
+  // Initialize UI language
+  I18n.updateDOM();
+
+  // Language Switcher Buttons (KZ / RU)
+  const btnKz = document.getElementById('lang-btn-kz');
+  const btnRu = document.getElementById('lang-btn-ru');
+
+  if (btnKz) {
+    btnKz.addEventListener('click', () => I18n.setLanguage('kz'));
+  }
+  if (btnRu) {
+    btnRu.addEventListener('click', () => I18n.setLanguage('ru'));
+  }
+
+  // Reactive Language Change Listener
+  window.addEventListener('formulab_lang_change', () => {
+    I18n.updateDOM();
+    Catalog.syncFilterUI();
+    Catalog.render();
+
+    // Re-render open modals with updated language
+    if (FormulaLab.currentFormula && labModalEl && labModalEl.classList.contains('active')) {
+      FormulaLab.renderModalContent();
+    }
+    if (Practice.currentFormula && practiceModalEl && practiceModalEl.classList.contains('active')) {
+      Practice.generateNewTask();
+    }
   });
+
+  // Initialize Practice component with stats callback
+  Practice.init(practiceModalEl, updateStatsUI);
+
+  // Initialize Quiz / Exam Mode component
+  Quiz.init(
+    examModalEl,
+    updateStatsUI,
+    (formula) => FormulaLab.open(formula)
+  );
+
+  // Exam Buttons (Header and Hero Banner)
+  const btnOpenExam = document.getElementById('btn-open-exam');
+  const btnHeroExam = document.getElementById('btn-hero-exam');
+  const btnExamSettings = document.getElementById('btn-exam-settings');
+
+  if (btnHeroExam) {
+    btnHeroExam.addEventListener('click', (e) => {
+      e.preventDefault();
+      Quiz.startQuickExam();
+    });
+  }
+  if (btnOpenExam) {
+    btnOpenExam.addEventListener('click', (e) => {
+      e.preventDefault();
+      Quiz.openSetup();
+    });
+  }
+  if (btnExamSettings) {
+    btnExamSettings.addEventListener('click', (e) => {
+      e.preventDefault();
+      Quiz.openSetup();
+    });
+  }
 
   // Initialize FormulaLab component
   FormulaLab.init(labModalEl, (formula) => {
@@ -52,12 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Subject Navigation Tabs (Все, Физика, Математика)
+  // Subject Navigation Tabs (Барлық пәндер / Физика / Математика)
   const subjectTabs = document.querySelectorAll('.subject-tab');
   subjectTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      subjectTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
       const subject = tab.getAttribute('data-subject');
       Catalog.setSubject(subject);
     });
@@ -66,9 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Topic filter pills
   const topicPills = document.querySelectorAll('.topic-pill');
   topicPills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      topicPills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
+    pill.addEventListener('click', (e) => {
+      e.preventDefault();
       const topic = pill.getAttribute('data-topic');
       Catalog.setTopic(topic);
     });
@@ -94,5 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  console.log("FormuLab MVP initialized successfully!");
-});
+  console.log("FormuLab initialized with bilingual KZ / RU support!");
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+

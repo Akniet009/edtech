@@ -22,6 +22,7 @@ export class Visualizer {
     switch (type) {
       case 'motion_curve':
       case 'parabola_graph':
+      case 'roots_graph':
       case 'pv_diagram':
       case 'energy_bar':
       case 'power_chart':
@@ -29,6 +30,7 @@ export class Visualizer {
       case 'trig_wave':
       case 'log_graph':
       case 'exp_graph':
+      case 'progression_bars':
         this.renderChart(containerEl, formula, varValues);
         break;
 
@@ -325,6 +327,85 @@ export class Visualizer {
           plugins: { legend: { labels: { color: '#e2e8f0' } } },
           scales: {
             x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      };
+    } else if (type === 'roots_graph') {
+      const a = varValues.a ?? 1;
+      const b = varValues.b ?? -5;
+      const c = varValues.c ?? 6;
+      const D = b * b - 4 * a * c;
+
+      const vertexX = a !== 0 ? -b / (2 * a) : 0;
+      const labels = [];
+      const dataPoints = [];
+      for (let x = vertexX - 4; x <= vertexX + 4; x += 0.5) {
+        labels.push(x.toFixed(1));
+        dataPoints.push(Number((a * x * x + b * x + c).toFixed(2)));
+      }
+
+      const dStatus = D > 0 ? `D = ${D} > 0 (2 корня)` : (D === 0 ? `D = 0 (1 корень)` : `D = ${D} < 0 (нет корней)`);
+      chartConfig = {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: `${dStatus}: y = ${a}x² + (${b})x + (${c})`,
+            data: dataPoints,
+            borderColor: D >= 0 ? '#10b981' : '#ef4444',
+            backgroundColor: D >= 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#e2e8f0' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+          }
+        }
+      };
+    } else if (type === 'progression_bars') {
+      const isGeo = formula.id === 'ent_geometric_progression';
+      const b1 = varValues.b_1 ?? 3;
+      const q = varValues.q ?? 2;
+      const a1 = varValues.a_1 ?? 2;
+      const d = varValues.d ?? 3;
+      const count = Math.min(8, Math.max(4, varValues.n ?? 5));
+
+      const labels = [];
+      const dataPoints = [];
+      for (let i = 1; i <= count; i++) {
+        labels.push(isGeo ? `b_${i}` : `a_${i}`);
+        if (isGeo) {
+          dataPoints.push(Number((b1 * Math.pow(q, i - 1)).toFixed(2)));
+        } else {
+          dataPoints.push(Number((a1 + (i - 1) * d).toFixed(2)));
+        }
+      }
+
+      chartConfig = {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: isGeo ? 'Члены геом. прогрессии' : 'Члены арифм. прогрессии',
+            data: dataPoints,
+            backgroundColor: '#6366f1',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#e2e8f0' } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' } },
             y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
           }
         }
@@ -744,6 +825,180 @@ export class Visualizer {
         ctx.fillStyle = '#ec4899';
         ctx.fillText(`Изображение f=${f}см`, imgX, axisY + 68);
       }
+
+    } else if (type === 'gravitation_visual') {
+      const m1 = varValues.m_1 ?? 6;
+      const m2 = varValues.m_2 ?? 7;
+      const r = varValues.r ?? 4;
+      const F_val = ((6.67 * m1 * m2) / (r * r)).toFixed(2);
+
+      const c1X = 110;
+      const c2X = Math.min(380, 110 + r * 50);
+      const cy = height / 2;
+      const r1 = Math.min(30, 14 + m1 * 2);
+      const r2 = Math.min(30, 14 + m2 * 2);
+
+      // Planet 1
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(c1X, cy, r1, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#bae6fd';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 13px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`m₁=${m1}`, c1X, cy + 5);
+
+      // Planet 2
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(c2X, cy, r2, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#fde68a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`m₂=${m2}`, c2X, cy + 5);
+
+      // Distance line
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(c1X + r1, cy);
+      ctx.lineTo(c2X - r2, cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`r = ${r} м`, (c1X + c2X) / 2, cy - 10);
+
+      // Mutual attraction arrows
+      this.drawArrow(ctx, c1X + r1 + 5, cy, c1X + r1 + 35, cy, '#ec4899', 3);
+      this.drawArrow(ctx, c2X - r2 - 5, cy, c2X - r2 - 35, cy, '#ec4899', 3);
+
+      ctx.fillStyle = '#ec4899';
+      ctx.font = 'bold 14px Outfit, sans-serif';
+      ctx.fillText(`F_тяг ≈ ${F_val}·10⁻¹¹ Н`, width / 2, height - 20);
+
+    } else if (type === 'vector_momentum') {
+      const m = varValues.m ?? 5;
+      const v = varValues.v ?? 12;
+      const p = (m * v).toFixed(1);
+
+      // Ground
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(30, 180);
+      ctx.lineTo(430, 180);
+      ctx.stroke();
+
+      // Cart
+      const cartW = Math.min(110, 50 + m * 5);
+      const cartH = 45;
+      const cartX = 80;
+      const cartY = 180 - cartH - 10;
+
+      ctx.fillStyle = '#6366f1';
+      ctx.fillRect(cartX, cartY, cartW, cartH);
+      ctx.strokeStyle = '#818cf8';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cartX, cartY, cartW, cartH);
+
+      // Wheels
+      ctx.fillStyle = '#334155';
+      ctx.beginPath();
+      ctx.arc(cartX + 20, 175, 7, 0, 2 * Math.PI);
+      ctx.arc(cartX + cartW - 20, 175, 7, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Cart label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`m = ${m} кг`, cartX + cartW / 2, cartY + cartH / 2 + 5);
+
+      // Velocity Arrow
+      const vLen = Math.min(90, 20 + v * 3);
+      this.drawArrow(ctx, cartX + cartW, cartY + 12, cartX + cartW + vLen, cartY + 12, '#10b981', 3);
+      ctx.fillStyle = '#10b981';
+      ctx.fillText(`v = ${v} м/с`, cartX + cartW + vLen / 2, cartY - 5);
+
+      // Momentum Vector
+      const pLen = Math.min(130, 30 + (p / 2));
+      this.drawArrow(ctx, cartX + cartW, cartY + 30, cartX + cartW + pLen, cartY + 30, '#ec4899', 4);
+      ctx.fillStyle = '#ec4899';
+      ctx.fillText(`p = ${p} кг·м/с`, cartX + cartW + pLen / 2, cartY + 48);
+
+    } else if (type === 'gravity_height') {
+      const m = varValues.m ?? 5;
+      const h = varValues.h ?? 10;
+      const Ep = (m * 9.8 * h).toFixed(1);
+
+      // Ground
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(30, 200);
+      ctx.lineTo(430, 200);
+      ctx.stroke();
+
+      // Height ruler
+      const groundY = 200;
+      const ballY = Math.max(40, groundY - h * 12);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(100, groundY);
+      ctx.lineTo(100, ballY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 14px Outfit, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(`h = ${h} м`, 90, (groundY + ballY) / 2);
+
+      // Ball
+      const ballR = Math.min(22, 10 + m * 1.5);
+      ctx.fillStyle = '#3b82f6';
+      ctx.beginPath();
+      ctx.arc(140, ballY, ballR, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#93c5fd';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(`m=${m}кг`, 140, ballY + 4);
+
+      // Gravity Arrow down
+      this.drawArrow(ctx, 140, ballY + ballR + 5, 140, ballY + ballR + 32, '#ef4444', 3);
+      ctx.fillStyle = '#ef4444';
+      ctx.textAlign = 'left';
+      ctx.fillText(`g = 9.8`, 152, ballY + ballR + 24);
+
+      // Energy meter box
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(250, 50, 170, 80);
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(250, 50, 170, 80);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 15px Outfit, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`E_p = m · g · h`, 335, 75);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 16px Outfit, sans-serif';
+      ctx.fillText(`${Ep} Дж`, 335, 108);
 
     } else {
       // General Canvas Diagram fallback

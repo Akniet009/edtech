@@ -23,7 +23,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Notion / Minimalist Stylesheet -->
-  <link rel="stylesheet" href="styles/styles.css" />
+  <link rel="stylesheet" href="styles/styles.css?v=2.6" />
 </head>
 <body>
 
@@ -34,21 +34,34 @@
       <span class="brand-title">FormuLab</span>
     </div>
 
-    <!-- User Stats (Clean Notion Badges) -->
+    <!-- User Stats, Language Switcher & Controls -->
     <div class="user-stats-bar">
-      <div class="stat-item" title="Текущая серия правильных ответов">
+      <div class="stat-item" data-i18n-title="streakTitle" title="Үздіксіз дұрыс жауаптар сериясы">
         <i class="fa-solid fa-fire stat-icon-streak"></i>
-        <span>Серия: <strong id="stat-streak">0</strong></span>
+        <span><span data-i18n="statStreak">Үздіксіз:</span> <strong id="stat-streak">0</strong></span>
       </div>
-      <div class="stat-item" title="Всего решено задач">
+      <div class="stat-item" data-i18n-title="solvedTitle" title="Жалпы шешілген есептер саны">
         <i class="fa-solid fa-check stat-icon-solved"></i>
-        <span>Решено: <strong id="stat-solved">0</strong></span>
+        <span><span data-i18n="statSolved">Шешілді:</span> <strong id="stat-solved">0</strong></span>
       </div>
-      <div class="stat-item" title="Процент точности">
+      <div class="stat-item" data-i18n-title="accuracyTitle" title="Дұрыс жауап беру дәлдігі">
         <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
-        <span>Точность: <strong id="stat-accuracy">100%</strong></span>
+        <span><span data-i18n="statAccuracy">Дәлдік:</span> <strong id="stat-accuracy">100%</strong></span>
       </div>
-      <button id="btn-theme-toggle" class="btn-icon" title="Сменить тему">
+
+      <!-- Bilingual Language Switcher -->
+      <div class="lang-switch-group" role="group" aria-label="Language Switcher">
+        <button id="lang-btn-kz" class="btn-lang active" data-lang="kz" title="Қазақ тілі">KZ</button>
+        <button id="lang-btn-ru" class="btn-lang" data-lang="ru" title="Русский язык">RU</button>
+      </div>
+
+      <!-- ҰБТ Exam Mode Button -->
+      <button id="btn-open-exam" class="btn btn-exam-mode" onclick="window.startUNTExam && window.startUNTExam()">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span data-i18n="examModeBtn">ҰБТ Тест</span>
+      </button>
+
+      <button id="btn-theme-toggle" class="btn-icon" data-i18n-title="themeToggleTitle" title="Тақырыпты ауыстыру">
         <i class="fa-solid fa-moon"></i>
       </button>
     </div>
@@ -60,10 +73,29 @@
     <!-- Minimalist Hero Section -->
     <section class="hero-section">
       <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">📐</div>
-      <h1 class="hero-title">Интерактивті формулалар атласы</h1>
-      <p class="hero-subtitle">
+      <h1 class="hero-title" data-i18n="heroTitle">Интерактивті формулалар атласы</h1>
+      <p class="hero-subtitle" data-i18n="heroSubtitle">
         Физика мен математика пәндері бойынша негізгі формулалар жинағы (ҰБТ • ЕНТ Рустюмов бойынша). Слайдерлерді жылжытып, графикті бақылаңыз және 1 кликпен есептер генераторында біліміңізді бекітіңіз.
       </p>
+
+      <!-- Exam Quick Start Banner -->
+      <div class="exam-banner glass-panel">
+        <div class="exam-banner-left">
+          <div class="exam-banner-icon"><i class="fa-solid fa-stopwatch-20"></i></div>
+          <div class="exam-banner-info">
+            <h3 class="exam-banner-title" data-i18n="examBannerTitle">ҰБТ Экспресс-Тест</h3>
+            <p class="exam-banner-desc" data-i18n="examBannerSubtitle">Физика мен математикадан 10–20 сұрақ арқылы біліміңізді тексеріп, нәтижеңізді анықтаңыз.</p>
+          </div>
+        </div>
+        <div class="exam-banner-actions">
+          <button id="btn-hero-exam" class="btn btn-primary btn-start-exam" onclick="window.startUNTExam && window.startUNTExam()">
+            <i class="fa-solid fa-play"></i> <span data-i18n="examStartBtn">Тестті бастау</span>
+          </button>
+          <button id="btn-exam-settings" class="btn btn-outline btn-exam-config" data-i18n-title="examConfigTitle" title="Тест баптаулары" onclick="window.openUNTExamSetup && window.openUNTExamSetup()">
+            <i class="fa-solid fa-sliders"></i>
+          </button>
+        </div>
+      </div>
 
       <!-- Controls & Filter Bar -->
       <div class="controls-bar">
@@ -74,27 +106,64 @@
             type="text"
             id="search-input"
             class="search-input"
+            data-i18n-placeholder="searchPlaceholder"
             placeholder="Формула бойынша іздеу (мысалы: Ньютон, Пифагор, Ом заңы, прогрессия, cos)..."
           />
         </div>
 
         <!-- Subject Navigation Tabs -->
         <div class="tabs-container">
-          <button class="subject-tab active" data-subject="all">Барлық пәндер</button>
-          <button class="subject-tab" data-subject="physics"><i class="fa-solid fa-bolt"></i> Физика</button>
-          <button class="subject-tab" data-subject="math"><i class="fa-solid fa-calculator"></i> Математика (ҰБТ)</button>
+          <button class="subject-tab active" data-subject="all">
+            <i class="fa-solid fa-layer-group"></i>
+            <span data-i18n="subjectAll">Барлық пәндер</span>
+            <span class="tab-count">40</span>
+          </button>
+          <button class="subject-tab" data-subject="physics">
+            <i class="fa-solid fa-bolt"></i>
+            <span data-i18n="subjectPhysics">Физика</span>
+            <span class="tab-count">17</span>
+          </button>
+          <button class="subject-tab" data-subject="math">
+            <i class="fa-solid fa-calculator"></i>
+            <span data-i18n="subjectMath">Математика (ҰБТ)</span>
+            <span class="tab-count">23</span>
+          </button>
         </div>
 
         <!-- Topic Pills -->
-        <div class="topics-row">
-          <button class="topic-pill active" data-topic="all">Барлық тақырыптар</button>
-          <button class="topic-pill" data-topic="Алгебра">Алгебра</button>
-          <button class="topic-pill" data-topic="Геометрия">Геометрия</button>
-          <button class="topic-pill" data-topic="Тригонометрия">Тригонометрия</button>
-          <button class="topic-pill" data-topic="Механика">Механика</button>
-          <button class="topic-pill" data-topic="Электродинамика">Электродинамика</button>
-          <button class="topic-pill" data-topic="Термодинамика">Термодинамика</button>
-          <button class="topic-pill" data-topic="Оптика">Оптика</button>
+        <div class="topics-row" id="topics-row">
+          <button class="topic-pill active" data-topic="all">
+            <span data-i18n="topicAll">Барлық тақырыптар</span>
+            <span class="pill-count">40</span>
+          </button>
+          <button class="topic-pill" data-topic="Алгебра" data-subject="math">
+            <span data-i18n="topicAlgebra">Алгебра</span>
+            <span class="pill-count">10</span>
+          </button>
+          <button class="topic-pill" data-topic="Геометрия" data-subject="math">
+            <span data-i18n="topicGeometry">Геометрия</span>
+            <span class="pill-count">8</span>
+          </button>
+          <button class="topic-pill" data-topic="Тригонометрия" data-subject="math">
+            <span data-i18n="topicTrig">Тригонометрия</span>
+            <span class="pill-count">5</span>
+          </button>
+          <button class="topic-pill" data-topic="Механика" data-subject="physics">
+            <span data-i18n="topicMechanics">Механика</span>
+            <span class="pill-count">9</span>
+          </button>
+          <button class="topic-pill" data-topic="Электродинамика" data-subject="physics">
+            <span data-i18n="topicElectrodynamics">Электродинамика</span>
+            <span class="pill-count">4</span>
+          </button>
+          <button class="topic-pill" data-topic="Термодинамика" data-subject="physics">
+            <span data-i18n="topicThermodynamics">Термодинамика</span>
+            <span class="pill-count">3</span>
+          </button>
+          <button class="topic-pill" data-topic="Оптика" data-subject="physics">
+            <span data-i18n="topicOptics">Оптика</span>
+            <span class="pill-count">1</span>
+          </button>
         </div>
       </div>
     </section>
@@ -107,7 +176,7 @@
   <!-- Formula Laboratory Modal -->
   <div id="formula-lab-modal" class="modal-overlay">
     <div class="modal-content">
-      <button class="modal-close" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close" data-i18n-title="closeBtnTitle" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-body"></div>
     </div>
   </div>
@@ -115,14 +184,22 @@
   <!-- Practice / Problem Generator Modal -->
   <div id="practice-modal" class="modal-overlay">
     <div class="modal-content">
-      <button class="modal-close" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
+      <button class="modal-close" data-i18n-title="closeBtnTitle" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- UNT / ENT Exam & Quiz Modal -->
+  <div id="exam-modal" class="modal-overlay">
+    <div class="modal-content modal-exam">
+      <button class="modal-close" data-i18n-title="closeBtnTitle" title="Жабу"><i class="fa-solid fa-xmark"></i></button>
       <div class="modal-body"></div>
     </div>
   </div>
 
   <!-- Minimalist Footer -->
   <footer class="app-footer">
-    <p>FormuLab — ҰБТ мен емтихандарға арналған интерактивті формулалар платформасы.</p>
+    <p data-i18n="footerText">FormuLab — ҰБТ мен емтихандарға арналған интерактивті формулалар платформасы.</p>
     <p style="margin-top: 0.5rem; font-size: 0.8rem;">
       <a href="https://github.com/Akniet009/edtech" target="_blank">
         <i class="fa-brands fa-github"></i> GitHub репозиторийі
@@ -135,7 +212,7 @@
   </footer>
 
   <!-- Application Logic JS -->
-  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=2.6"></script>
 
 </body>
 </html>
