@@ -2813,5 +2813,844 @@ body.light-theme .xp-bar-track {
   background-color: rgba(239, 68, 68, 0.12) !important;
 }
 
+/* --------------------------------------------------------------------------
+   A4 Cheat-sheet & Certificate Styles
+   -------------------------------------------------------------------------- */
+
+/* Header & Banner Cheat-sheet Buttons */
+.btn-cheat-sheet {
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #3b82f6;
+  font-weight: 600;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+}
+
+.btn-cheat-sheet:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+.btn-hero-cheat-sheet {
+  border-color: rgba(59, 130, 246, 0.35);
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.btn-hero-cheat-sheet:hover {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.btn-certificate {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+  border: none;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.btn-certificate:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.45);
+}
+
+/* Cheat-sheet Modal */
+.modal-cheat-sheet {
+  max-width: 1100px;
+  width: 95%;
+  max-height: 90vh;
+}
+
+.cheatsheet-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cheatsheet-controls {
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+}
+
+.cheatsheet-controls-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cheatsheet-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.cheatsheet-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+}
+
+.cheatsheet-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.cheatsheet-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.cheatsheet-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-print-sheet {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  font-weight: 600;
+  gap: 0.45rem;
+}
+
+.cheatsheet-search-row {
+  margin-bottom: 0.85rem;
+}
+
+.cheatsheet-search-box {
+  max-width: 100%;
+}
+
+.cheatsheet-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+}
+
+.cheatsheet-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.cheatsheet-filter-pill:hover {
+  border-color: #3b82f6;
+  color: var(--text-main);
+}
+
+.cheatsheet-filter-pill.active {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.pill-badge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.light-theme .pill-badge {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Printable Sheet Area in Screen Preview */
+.cheatsheet-printable-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.print-document-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.print-brand-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.print-brand-tagline {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.print-header-meta {
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.cheatsheet-topic-group {
+  margin-bottom: 1.5rem;
+}
+
+.cheatsheet-topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.topic-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-main);
+}
+
+.topic-header-title i {
+  color: #3b82f6;
+  font-size: 1.05rem;
+}
+
+.topic-header-title h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.topic-count-tag {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.cheatsheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1rem;
+}
+
+.cheat-formula-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: all 0.2s ease;
+}
+
+.cheat-formula-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.cheat-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cheat-index {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cheat-formula-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  flex: 1;
+}
+
+.cheat-subtopic-tag {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+body.light-theme .cheat-subtopic-tag {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.cheat-math-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  padding: 0.65rem;
+  text-align: center;
+  overflow-x: auto;
+}
+
+body.light-theme .cheat-math-box {
+  background: #f8fafc;
+}
+
+.cheat-latex {
+  font-size: 1.15rem;
+  color: var(--text-main);
+}
+
+.cheat-target-var {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+}
+
+.target-badge {
+  font-weight: 700;
+  color: #10b981;
+}
+
+.cheat-vars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.cheat-var-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.var-sym {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+body.light-theme .var-sym {
+  color: #0284c7;
+}
+
+.var-sep {
+  color: var(--text-muted);
+}
+
+.var-name {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.var-unit {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.cheat-desc-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.45rem;
+  line-height: 1.35;
+}
+
+.print-document-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+.cheatsheet-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Certificate Styles (Official Academic Award)
+   -------------------------------------------------------------------------- */
+
+.modal-certificate-container {
+  max-width: 940px;
+  width: 95%;
+  max-height: 92vh;
+}
+
+.certificate-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.certificate-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+}
+
+.cert-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.cert-input-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.cert-name-input {
+  flex: 1;
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.cert-name-input:focus {
+  border-color: #d4af37;
+}
+
+.cert-action-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-print-cert {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  font-weight: 600;
+  gap: 0.45rem;
+}
+
+/* Certificate Paper Canvas */
+.certificate-paper {
+  background: #fdfbf7;
+  color: #1a202c;
+  padding: 1.75rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  position: relative;
+}
+
+.cert-ornament-border {
+  border: 3px double #d4af37;
+  padding: 6px;
+  position: relative;
+}
+
+.cert-inner-border {
+  border: 1px solid rgba(212, 175, 55, 0.6);
+  padding: 1.75rem 2rem;
+  position: relative;
+  text-align: center;
+}
+
+.cert-corner {
+  position: absolute;
+  color: #d4af37;
+  font-size: 1.35rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.corner-tl { top: 4px; left: 6px; }
+.corner-tr { top: 4px; right: 6px; }
+.corner-bl { bottom: 4px; left: 6px; }
+.corner-br { bottom: 4px; right: 6px; }
+
+.cert-header-block {
+  margin-bottom: 1.25rem;
+}
+
+.cert-republic-banner {
+  font-family: Georgia, serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #78350f;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.cert-crest-icon {
+  font-size: 2.2rem;
+  color: #d97706;
+  margin-bottom: 0.25rem;
+}
+
+.cert-main-title {
+  font-family: Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.cert-subtitle-underline {
+  width: 140px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  margin: 0.45rem auto 1rem auto;
+}
+
+.cert-recipient-block {
+  margin-bottom: 1.25rem;
+}
+
+.cert-intro-text {
+  font-size: 0.92rem;
+  color: #475569;
+  font-style: italic;
+  margin-bottom: 0.4rem;
+}
+
+.cert-student-name {
+  font-family: Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  border-bottom: 2px solid #d4af37;
+  display: inline-block;
+  padding: 0.2rem 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cert-achievement-desc {
+  font-size: 0.92rem;
+  color: #334155;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.45;
+}
+
+.cert-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.cert-metric-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.metric-top-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.metric-value-big {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.metric-value-big.text-gold {
+  color: #b45309;
+}
+
+.metric-sub {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.metric-desc-sub {
+  font-size: 0.68rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.metric-rank-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #b45309;
+  line-height: 1.2;
+}
+
+.cert-footer-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+}
+
+.cert-sign-col {
+  text-align: left;
+  min-width: 160px;
+}
+
+.cert-sign-signature {
+  font-family: 'Brush Script MT', cursive, Georgia, serif;
+  font-size: 1.5rem;
+  color: #1e3a8a;
+  letter-spacing: 0.02em;
+}
+
+.cert-sign-line {
+  width: 140px;
+  height: 1px;
+  background: #94a3b8;
+  margin: 0.25rem 0;
+}
+
+.cert-sign-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.cert-sign-role {
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.cert-seal-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-gold-seal {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fde047 0%, #d97706 70%, #92400e 100%);
+  padding: 4px;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seal-inner-ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px dashed #78350f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #78350f;
+  font-weight: 800;
+  text-align: center;
+}
+
+.seal-stars {
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+}
+
+.seal-text-center {
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+
+.seal-sub-center {
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+}
+
+.seal-year {
+  font-size: 0.58rem;
+}
+
+.cert-verify-col {
+  text-align: right;
+  font-size: 0.75rem;
+  color: #475569;
+  min-width: 160px;
+}
+
+.cert-meta-item {
+  margin-bottom: 0.25rem;
+}
+
+.meta-code {
+  font-family: var(--font-mono);
+  color: #1e293b;
+}
+
+.cert-security-badge {
+  font-size: 0.68rem;
+  color: #15803d;
+  font-weight: 600;
+  margin-top: 0.35rem;
+}
+
+/* --------------------------------------------------------------------------
+   Print Media Rules (@media print)
+   -------------------------------------------------------------------------- */
+
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide everything on screen except the modal content being printed */
+  header,
+  .hero-section,
+  .formula-grid,
+  .app-footer,
+  .achievement-toast-container,
+  .modal-close,
+  .no-print,
+  .modal-overlay:not(.active) {
+    display: none !important;
+  }
+
+  .modal-overlay.active {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .modal-content {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Cheatsheet Print Optimizations */
+  body.print-mode-cheatsheet {
+    padding: 0 !important;
+  }
+
+  body.print-mode-cheatsheet .cheatsheet-printable-sheet {
+    display: block !important;
+    width: 100% !important;
+    color: #111827 !important;
+    background: #ffffff !important;
+  }
+
+  body.print-mode-cheatsheet .cheatsheet-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  body.print-mode-cheatsheet .cheat-formula-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    border: 1px solid #94a3b8 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  body.print-mode-cheatsheet .cheat-math-box {
+    background: #f8fafc !important;
+    color: #000000 !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  body.print-mode-cheatsheet .print-document-header,
+  body.print-mode-cheatsheet .print-document-footer {
+    display: flex !important;
+  }
+
+  /* Certificate Print Optimizations */
+  body.print-mode-certificate .certificate-paper {
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5rem !important;
+    background: #ffffff !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+
 
 

@@ -6,6 +6,7 @@ import { I18n } from '../i18n.js';
 import { FORMULAS_DATA } from '../data/formulas.js';
 import { Gamification } from './gamification.js';
 import { MistakesBank } from './mistakes.js';
+import { Certificate } from './exportPdf.js';
 
 export class Quiz {
   static modalEl = null;
@@ -700,6 +701,9 @@ export class Quiz {
 
         <!-- Actions -->
         <div class="scorecard-actions">
+          <button type="button" id="btn-export-certificate" class="btn btn-certificate">
+            <i class="fa-solid fa-award"></i> ${I18n.t('examCertificateBtn')}
+          </button>
           <button type="button" id="btn-retake-exam" class="btn btn-primary">
             <i class="fa-solid fa-rotate-right"></i> ${I18n.t('examRetakeBtn')}
           </button>
@@ -736,6 +740,20 @@ export class Quiz {
     }
 
     // Attach actions
+    const certBtn = modalBody.querySelector('#btn-export-certificate');
+    if (certBtn) {
+      certBtn.addEventListener('click', () => {
+        this.hide();
+        Certificate.open({
+          total,
+          correct,
+          accuracy,
+          elapsedSeconds,
+          subject: this.examOptions.subject
+        });
+      });
+    }
+
     const retakeBtn = modalBody.querySelector('#btn-retake-exam');
     if (retakeBtn) {
       retakeBtn.addEventListener('click', () => this.openSetup());

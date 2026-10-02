@@ -6,6 +6,7 @@ import { Practice } from './components/practice.js';
 import { Quiz } from './components/quiz.js';
 import { Gamification } from './components/gamification.js';
 import { MistakesBank } from './components/mistakes.js';
+import { CheatSheet, Certificate } from './components/exportPdf.js';
 import { I18n } from './i18n.js';
 
 // Expose globals immediately for onclick attributes and console access
@@ -14,6 +15,8 @@ window.Practice = Practice;
 window.FormulaLab = FormulaLab;
 window.Gamification = Gamification;
 window.MistakesBank = MistakesBank;
+window.CheatSheet = CheatSheet;
+window.Certificate = Certificate;
 window.startUNTExam = (subject = 'all', count = 10, duration = 10) => {
   Quiz.ensureModal();
   Quiz.startQuickExam(subject, count, duration);
@@ -27,6 +30,12 @@ window.openAchievements = () => {
 };
 window.openMistakesBank = () => {
   MistakesBank.open();
+};
+window.openCheatSheet = (subject = 'all') => {
+  CheatSheet.open(subject);
+};
+window.openCertificate = (data) => {
+  Certificate.open(data);
 };
 
 const initApp = () => {
@@ -89,7 +98,36 @@ const initApp = () => {
     if (MistakesBank.modalEl && MistakesBank.modalEl.classList.contains('active')) {
       MistakesBank.renderModal();
     }
+    if (CheatSheet.modalEl && CheatSheet.modalEl.classList.contains('active')) {
+      CheatSheet.render();
+    }
+    if (Certificate.modalEl && Certificate.modalEl.classList.contains('active')) {
+      Certificate.render();
+    }
   });
+
+  // Initialize CheatSheet & Certificate components
+  const cheatSheetModalEl = document.getElementById('cheat-sheet-modal');
+  CheatSheet.init(cheatSheetModalEl);
+
+  const certModalEl = document.getElementById('certificate-modal');
+  Certificate.init(certModalEl);
+
+  const btnOpenCheatSheet = document.getElementById('btn-open-cheat-sheet');
+  if (btnOpenCheatSheet) {
+    btnOpenCheatSheet.addEventListener('click', (e) => {
+      e.preventDefault();
+      CheatSheet.open('all');
+    });
+  }
+
+  const btnHeroCheatSheet = document.getElementById('btn-hero-cheat-sheet');
+  if (btnHeroCheatSheet) {
+    btnHeroCheatSheet.addEventListener('click', (e) => {
+      e.preventDefault();
+      CheatSheet.open('all');
+    });
+  }
 
   // Initialize Gamification component
   const achievementsModalEl = document.getElementById('achievements-modal');

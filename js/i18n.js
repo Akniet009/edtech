@@ -109,6 +109,38 @@ export const UI_TRANSLATIONS = {
     examCorrectAnswer: "Дұрыс жауап:",
     examNotAnswered: "Жауап берілмеген",
     examViewFormula: "Формуланы ашу",
+    examCertificateBtn: "ҰБТ Сертификатын алу (PDF)",
+
+    // Cheat Sheet & Certificate
+    cheatSheetBtn: "Шпаргалка (A4)",
+    cheatSheetTitle: "Формулалар шпаргалкасы (A4 баспаға дайын)",
+    cheatSheetHeroBtn: "A4 Шпаргалка",
+    cheatSheetModalTitle: "ҰБТ • ЕНТ Формулалар Шпаргалкасы (A4)",
+    cheatSheetPrintBtn: "Басып шығару (Print / PDF)",
+    cheatSheetCopyBtn: "Формулаларды көшіру",
+    cheatSheetSubtitle: "ҰБТ мен емтихандарға арналған 40 негізгі формула анықтамалығы (Рустюмов & ҰТО)",
+    cheatSheetFilterAll: "Барлығы",
+    cheatSheetFilterPhysics: "Физика",
+    cheatSheetFilterMath: "Математика",
+    cheatSheetCopied: "Формулалар тізімі көшірілді!",
+
+    // Certificate
+    certTitle: "СЕРТИФИКАТ",
+    certRepublic: "ҚАЗАҚСТАН РЕСПУБЛИКАСЫ • FORMULAB ОНЛАЙН АКАДЕМИЯСЫ",
+    certPresentedTo: "Осы сертификат төмендегі білім алушыға табысталады:",
+    certNameLabel: "Оқушы аты-жөні:",
+    certDefaultName: "ҰБТ Түлегі",
+    certNamePlaceholder: "Аты-жөніңізді жазыңыз...",
+    certCompletedText: "«ҰБТ Экспресс-Тестінен» сәтті өтіп, келесі жоғары академиялық нәтижені көрсетті:",
+    certScore: "Жинаған балы:",
+    certAccuracy: "Дәлдік көрсеткіші:",
+    certTime: "Сынақ уақыты:",
+    certRank: "Тағайындалған дәреже:",
+    certDate: "Берілген күні:",
+    certNumber: "Сертификат №:",
+    certPrintBtn: "Сертификатты жүктеу / Басып шығару (PDF)",
+    certShareBtn: "Нәтижені бөлісу",
+    certCopiedToast: "Сертификат нәтижесі алмасу буферіне көшірілді!",
 
     // Footer
     footerText: "FormuLab — ҰБТ мен емтихандарға арналған интерактивті формулалар платформасы."
@@ -220,6 +252,38 @@ export const UI_TRANSLATIONS = {
     examCorrectAnswer: "Правильный ответ:",
     examNotAnswered: "Нет ответа",
     examViewFormula: "Открыть формулу",
+    examCertificateBtn: "Получить Сертификат ЕНТ (PDF)",
+
+    // Cheat Sheet & Certificate
+    cheatSheetBtn: "Шпаргалка (A4)",
+    cheatSheetTitle: "Шпаргалка формул (A4 для печати и PDF)",
+    cheatSheetHeroBtn: "A4 Шпаргалка",
+    cheatSheetModalTitle: "Шпаргалка формул ҰБТ • ЕНТ (A4)",
+    cheatSheetPrintBtn: "Распечатать (Print / PDF)",
+    cheatSheetCopyBtn: "Скопировать формулы",
+    cheatSheetSubtitle: "Полный справочник 40 формул для ЕНТ и экзаменов (по Рустюмову и НЦТ)",
+    cheatSheetFilterAll: "Все",
+    cheatSheetFilterPhysics: "Физика",
+    cheatSheetFilterMath: "Математика",
+    cheatSheetCopied: "Список формул скопирован!",
+
+    // Certificate
+    certTitle: "СЕРТИФИКАТ",
+    certRepublic: "РЕСПУБЛИКА КАЗАХСТАН • ОБРАЗОВАТЕЛЬНАЯ ПЛАТФОРМА FORMULAB",
+    certPresentedTo: "Настоящий сертификат подтверждает, что:",
+    certNameLabel: "ФИО ученика:",
+    certDefaultName: "Выпускник ЕНТ",
+    certNamePlaceholder: "Введите ваше имя...",
+    certCompletedText: "Успешно прошел(ла) «Экспресс-Тест ЕНТ» и продемонстрировал(а) следующий академический результат:",
+    certScore: "Набранный балл:",
+    certAccuracy: "Точность ответов:",
+    certTime: "Время тестирования:",
+    certRank: "Присвоенное звание:",
+    certDate: "Дата выдачи:",
+    certNumber: "Номер сертификата:",
+    certPrintBtn: "Скачать / Распечатать сертификат (PDF)",
+    certShareBtn: "Поделиться результатом",
+    certCopiedToast: "Результат сертификата скопирован в буфер обмена!",
 
     // Footer
     footerText: "FormuLab — Интерактивный справочник-тренажер формул для подготовки к ҰБТ / ЕНТ."
