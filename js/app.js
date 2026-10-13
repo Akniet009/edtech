@@ -204,14 +204,74 @@ const initApp = () => {
     (formula) => Practice.open(formula)
   );
 
-  // Search input listener with debouncing
+  // Enhanced Search Box: Debouncing, Clear Button, Shortcuts (Ctrl+K, /), and Meta Reset
   let searchTimeout = null;
+  const searchClearBtn = document.getElementById('search-clear-btn');
+  const searchShortcutBadge = document.getElementById('search-shortcut-badge');
+  const btnQuickReset = document.getElementById('btn-quick-reset-filters');
+
+  if (searchShortcutBadge) {
+    const isMac = typeof navigator !== 'undefined' && navigator.platform && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+    searchShortcutBadge.innerHTML = isMac ? '<kbd>⌘</kbd> <kbd>K</kbd>' : '<kbd>Ctrl</kbd> <kbd>K</kbd>';
+    searchShortcutBadge.addEventListener('click', () => {
+      if (searchInputEl) {
+        searchInputEl.focus();
+        searchInputEl.select();
+      }
+    });
+  }
+
   if (searchInputEl) {
     searchInputEl.addEventListener('input', (e) => {
       clearTimeout(searchTimeout);
+      const val = e.target.value;
+      if (searchClearBtn) {
+        searchClearBtn.style.display = val.trim().length > 0 ? 'flex' : 'none';
+      }
       searchTimeout = setTimeout(() => {
-        Catalog.setSearchQuery(e.target.value);
-      }, 150);
+        Catalog.setSearchQuery(val);
+      }, 120);
+    });
+
+    if (searchClearBtn) {
+      searchClearBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        searchInputEl.value = '';
+        searchClearBtn.style.display = 'none';
+        Catalog.setSearchQuery('');
+        searchInputEl.focus();
+      });
+    }
+
+    if (btnQuickReset) {
+      btnQuickReset.addEventListener('click', (e) => {
+        e.preventDefault();
+        Catalog.resetFilters();
+      });
+    }
+
+    // Global keyboard shortcuts: Ctrl+K, Cmd+K, "/" and Escape
+    window.addEventListener('keydown', (e) => {
+      const activeModal = document.querySelector('.modal-overlay.active');
+      if (activeModal) return;
+
+      const isModifierK = (e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K');
+      const isSlash = e.key === '/' && document.activeElement !== searchInputEl &&
+        document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA';
+
+      if (isModifierK || isSlash) {
+        e.preventDefault();
+        searchInputEl.focus();
+        searchInputEl.select();
+      } else if (e.key === 'Escape' && document.activeElement === searchInputEl) {
+        if (searchInputEl.value) {
+          searchInputEl.value = '';
+          if (searchClearBtn) searchClearBtn.style.display = 'none';
+          Catalog.setSearchQuery('');
+        } else {
+          searchInputEl.blur();
+        }
+      }
     });
   }
 
@@ -255,7 +315,58 @@ const initApp = () => {
     }
   }
 
-  console.log("FormuLab initialized with bilingual KZ / RU support!");
+  // Unified Header Dropdown Menu Controller
+  const btnMenuToggle = document.getElementById('btn-menu-toggle');
+  const dropdownMenu = document.getElementById('header-dropdown-menu');
+
+  if (btnMenuToggle && dropdownMenu) {
+    const toggleMenu = (forceState) => {
+      const isCurrentlyActive = dropdownMenu.classList.contains('active');
+      const nextState = forceState !== undefined ? forceState : !isCurrentlyActive;
+
+      dropdownMenu.classList.toggle('active', nextState);
+      btnMenuToggle.classList.toggle('active', nextState);
+      btnMenuToggle.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+      dropdownMenu.setAttribute('aria-hidden', nextState ? 'false' : 'true');
+    };
+
+    btnMenuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Close when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownMenu.contains(e.target) && !btnMenuToggle.contains(e.target)) {
+        toggleMenu(false);
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dropdownMenu.classList.contains('active')) {
+        toggleMenu(false);
+      }
+    });
+
+    // Close menu when triggering modals from menu
+    const modalTriggerIds = [
+      'btn-open-exam',
+      'btn-open-cheat-sheet',
+      'btn-open-achievements',
+      'btn-open-mistakes'
+    ];
+    modalTriggerIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', () => {
+          toggleMenu(false);
+        });
+      }
+    });
+  }
+
+  console.log("FormuLab initialized with bilingual KZ / RU support and unified clean header menu!");
 };
 
 if (document.readyState === 'loading') {

@@ -28,6 +28,7 @@ export class Quiz {
   };
 
   static _listenersAttached = false;
+  static _keydownAttached = false;
 
   static ensureModal() {
     if (!this.modalEl) {
@@ -42,8 +43,59 @@ export class Quiz {
       this.modalEl.addEventListener('click', (e) => {
         if (e.target === this.modalEl) this.handleModalClose();
       });
+      this.attachKeyboardListener();
     }
     return this.modalEl;
+  }
+
+  static attachKeyboardListener() {
+    if (this._keydownAttached) return;
+    this._keydownAttached = true;
+
+    document.addEventListener('keydown', (e) => {
+      if (!this.modalEl || !this.modalEl.classList.contains('active')) return;
+      if (this.isCompleted) return;
+      if (!this.questions || this.questions.length === 0) return;
+
+      // Don't intercept when user is typing in an input
+      const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (tag === 'input' || tag === 'textarea') return;
+
+      const key = e.key.toLowerCase();
+
+      // Number keys 1-4 or letters A-D (including RU/KZ keyboard layouts)
+      let choiceIdx = -1;
+      if (key === '1' || key === 'a' || key === 'а' || key === 'ф') choiceIdx = 0;
+      else if (key === '2' || key === 'b' || key === 'б' || key === 'в' || key === 'и') choiceIdx = 1;
+      else if (key === '3' || key === 'c' || key === 'с' || key === 'ц') choiceIdx = 2;
+      else if (key === '4' || key === 'd' || key === 'д' || key === 'в') choiceIdx = 3;
+
+      if (choiceIdx >= 0) {
+        const q = this.questions[this.currentIndex];
+        if (q && q.options && q.options[choiceIdx]) {
+          e.preventDefault();
+          const opt = q.options[choiceIdx];
+          this.recordAnswer(opt.label, opt.value);
+          this.renderQuestionScreen();
+        }
+        return;
+      }
+
+      // Arrows & Enter navigation
+      if (e.key === 'ArrowLeft') {
+        if (this.currentIndex > 0) {
+          e.preventDefault();
+          this.currentIndex--;
+          this.renderQuestionScreen();
+        }
+      } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+        if (this.currentIndex < this.questions.length - 1) {
+          e.preventDefault();
+          this.currentIndex++;
+          this.renderQuestionScreen();
+        }
+      }
+    });
   }
 
   static init(modalEl, onStatsUpdate, onOpenFormula) {
@@ -103,12 +155,21 @@ export class Quiz {
     const modalBody = this.modalEl.querySelector('.modal-body');
     if (!modalBody) return;
 
+    const isKz = I18n.getLanguage() === 'kz';
+
     modalBody.innerHTML = `
       <div class="exam-setup-card">
         <div class="exam-setup-header">
-          <div class="exam-badge-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="exam-badge-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
           <h2 class="exam-setup-title">${I18n.t('examSetupTitle')}</h2>
           <p class="exam-setup-subtitle">${I18n.t('examSetupSubtitle')}</p>
+          <div class="exam-setup-chips">
+            <span class="setup-chip"><i class="fa-solid fa-shield-halved"></i> ${isKz ? 'ҰБТ 2026 стандарты' : 'Стандарт ЕНТ 2026'}</span>
+            <span class="setup-chip"><i class="fa-solid fa-shuffle"></i> ${isKz ? 'Кездейсоқ генерация' : 'Случайная генерация'}</span>
+            <span class="setup-chip"><i class="fa-solid fa-calculator"></i> ${isKz ? '40 формула базасы' : 'База из 40 формул'}</span>
+          </div>
         </div>
 
         <form id="exam-setup-form" class="exam-setup-form">
@@ -117,18 +178,30 @@ export class Quiz {
             <label class="setup-label">
               <i class="fa-solid fa-book-bookmark"></i> ${I18n.t('examSubjectLabel')}
             </label>
-            <div class="setup-options-grid setup-subjects-grid">
-              <button type="button" class="btn-setup-opt ${this.examOptions.subject === 'all' ? 'active' : ''}" data-subject="all">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>${I18n.t('examSubjectAll')}</span>
+            <div class="setup-subjects-grid">
+              <button type="button" class="btn-setup-opt setup-subject-card ${this.examOptions.subject === 'all' ? 'active' : ''}" data-subject="all">
+                <div class="setup-opt-icon icon-all"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="setup-opt-info">
+                  <strong>${I18n.t('examSubjectAll')}</strong>
+                  <span>${isKz ? 'Физика + Математика' : 'Физика + Математика'}</span>
+                </div>
+                <div class="opt-check"><i class="fa-solid fa-check"></i></div>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.subject === 'physics' ? 'active' : ''}" data-subject="physics">
-                <i class="fa-solid fa-bolt"></i>
-                <span>${I18n.t('examSubjectPhysics')}</span>
+              <button type="button" class="btn-setup-opt setup-subject-card ${this.examOptions.subject === 'physics' ? 'active' : ''}" data-subject="physics">
+                <div class="setup-opt-icon icon-physics"><i class="fa-solid fa-bolt"></i></div>
+                <div class="setup-opt-info">
+                  <strong>${I18n.t('examSubjectPhysics')}</strong>
+                  <span>${isKz ? '17 формула' : '17 формул'}</span>
+                </div>
+                <div class="opt-check"><i class="fa-solid fa-check"></i></div>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.subject === 'math' ? 'active' : ''}" data-subject="math">
-                <i class="fa-solid fa-calculator"></i>
-                <span>${I18n.t('examSubjectMath')}</span>
+              <button type="button" class="btn-setup-opt setup-subject-card ${this.examOptions.subject === 'math' ? 'active' : ''}" data-subject="math">
+                <div class="setup-opt-icon icon-math"><i class="fa-solid fa-calculator"></i></div>
+                <div class="setup-opt-info">
+                  <strong>${I18n.t('examSubjectMath')}</strong>
+                  <span>${isKz ? '23 формула' : '23 формулы'}</span>
+                </div>
+                <div class="opt-check"><i class="fa-solid fa-check"></i></div>
               </button>
             </div>
           </div>
@@ -138,18 +211,22 @@ export class Quiz {
             <label class="setup-label">
               <i class="fa-solid fa-list-ol"></i> ${I18n.t('examCountLabel')}
             </label>
-            <div class="setup-options-row">
-              <button type="button" class="btn-setup-opt ${this.examOptions.count === 5 ? 'active' : ''}" data-count="5">
-                ${I18n.t('examCount5')}
+            <div class="setup-segments-row">
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.count === 5 ? 'active' : ''}" data-count="5">
+                <span class="seg-val">5</span>
+                <span class="seg-sub">${isKz ? 'Экспресс' : 'Экспресс'}</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.count === 10 ? 'active' : ''}" data-count="10">
-                ${I18n.t('examCount10')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.count === 10 ? 'active' : ''}" data-count="10">
+                <span class="seg-val">10</span>
+                <span class="seg-sub">${isKz ? 'Стандарт' : 'Стандарт'}</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.count === 15 ? 'active' : ''}" data-count="15">
-                ${I18n.t('examCount15')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.count === 15 ? 'active' : ''}" data-count="15">
+                <span class="seg-val">15</span>
+                <span class="seg-sub">${isKz ? 'Толық' : 'Полный'}</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.count === 20 ? 'active' : ''}" data-count="20">
-                ${I18n.t('examCount20')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.count === 20 ? 'active' : ''}" data-count="20">
+                <span class="seg-val">20</span>
+                <span class="seg-sub">${isKz ? 'ҰБТ блогы' : 'Блок ЕНТ'}</span>
               </button>
             </div>
           </div>
@@ -159,18 +236,22 @@ export class Quiz {
             <label class="setup-label">
               <i class="fa-solid fa-stopwatch"></i> ${I18n.t('examTimeLabel')}
             </label>
-            <div class="setup-options-row">
-              <button type="button" class="btn-setup-opt ${this.examOptions.durationMinutes === 5 ? 'active' : ''}" data-time="5">
-                ${I18n.t('examTime5')}
+            <div class="setup-segments-row">
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.durationMinutes === 5 ? 'active' : ''}" data-time="5">
+                <span class="seg-val">5 мин</span>
+                <span class="seg-sub">~1 мин/есеп</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.durationMinutes === 10 ? 'active' : ''}" data-time="10">
-                ${I18n.t('examTime10')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.durationMinutes === 10 ? 'active' : ''}" data-time="10">
+                <span class="seg-val">10 мин</span>
+                <span class="seg-sub">Оңтайлы</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.durationMinutes === 15 ? 'active' : ''}" data-time="15">
-                ${I18n.t('examTime15')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.durationMinutes === 15 ? 'active' : ''}" data-time="15">
+                <span class="seg-val">15 мин</span>
+                <span class="seg-sub">Еркін қарқын</span>
               </button>
-              <button type="button" class="btn-setup-opt ${this.examOptions.durationMinutes === 0 ? 'active' : ''}" data-time="0">
-                ${I18n.t('examTimeNoLimit')}
+              <button type="button" class="btn-setup-opt btn-segment-opt ${this.examOptions.durationMinutes === 0 ? 'active' : ''}" data-time="0">
+                <span class="seg-val">∞</span>
+                <span class="seg-sub">${isKz ? 'Шексіз' : 'Без лимита'}</span>
               </button>
             </div>
           </div>
@@ -178,7 +259,7 @@ export class Quiz {
           <!-- Start Button -->
           <div class="setup-footer">
             <button type="submit" class="btn btn-primary btn-launch-exam">
-              <i class="fa-solid fa-rocket"></i> ${I18n.t('examStartModalBtn')}
+              <i class="fa-solid fa-play"></i> <span>${I18n.t('examStartModalBtn')}</span>
             </button>
           </div>
         </form>
@@ -313,6 +394,7 @@ export class Quiz {
     const total = this.questions.length;
     const progressPercent = Math.round(((this.currentIndex + 1) / total) * 100);
     const currentAnswer = this.userAnswers[this.currentIndex];
+    const isKz = I18n.getLanguage() === 'kz';
 
     const isPhysics = q.subject === 'physics';
     const subjectBadgeClass = isPhysics ? 'badge-physics' : 'badge-math';
@@ -326,7 +408,12 @@ export class Quiz {
       if (isCurrent) classes += ' current';
       if (isAnswered) classes += ' answered';
 
-      return `<button type="button" class="${classes}" data-go-idx="${idx}">${idx + 1}</button>`;
+      return `
+        <button type="button" class="${classes}" data-go-idx="${idx}" title="${isKz ? `${idx + 1}-сұрақ` : `Вопрос ${idx + 1}`}">
+          <span class="pill-number">${idx + 1}</span>
+          ${isAnswered ? '<span class="pill-check"><i class="fa-solid fa-check"></i></span>' : ''}
+        </button>
+      `;
     }).join('');
 
     // Timer display string
@@ -341,8 +428,13 @@ export class Quiz {
       const isSelected = currentAnswer && currentAnswer.optionLabel === opt.label;
       return `
         <button type="button" class="exam-choice-btn ${isSelected ? 'selected' : ''}" data-label="${opt.label}" data-value="${opt.value}">
-          <span class="choice-label">${opt.label}</span>
-          <span class="choice-value">${opt.value}${q.unit ? ' ' + q.unit : ''}</span>
+          <span class="choice-keycap">${opt.label}</span>
+          <div class="choice-body">
+            <span class="choice-value">${opt.value}${q.unit ? ' ' + q.unit : ''}</span>
+          </div>
+          <div class="choice-indicator">
+            <i class="fa-solid fa-check"></i>
+          </div>
         </button>
       `;
     }).join('');
@@ -352,9 +444,12 @@ export class Quiz {
         <!-- Top Exam Header Bar -->
         <div class="exam-top-bar">
           <div class="exam-progress-info">
-            <span class="exam-q-counter">
-              ${I18n.t('examQuestionCount')} <strong>${this.currentIndex + 1}</strong> / ${total}
-            </span>
+            <div class="exam-progress-header">
+              <span class="exam-q-counter">
+                ${I18n.t('examQuestionCount')} <strong>${this.currentIndex + 1}</strong> / ${total}
+              </span>
+              <span class="exam-progress-pct">${progressPercent}%</span>
+            </div>
             <div class="exam-progress-track">
               <div class="exam-progress-fill" style="width: ${progressPercent}%;"></div>
             </div>
@@ -369,7 +464,7 @@ export class Quiz {
             ` : ''}
 
             <button type="button" id="btn-exam-finish" class="btn btn-outline btn-finish-early">
-              <i class="fa-solid fa-flag-checkered"></i> ${I18n.t('examFinishBtn')}
+              <i class="fa-solid fa-flag-checkered"></i> <span>${I18n.t('examFinishBtn')}</span>
             </button>
           </div>
         </div>
@@ -380,10 +475,17 @@ export class Quiz {
         </div>
 
         <!-- Question Card Box -->
-        <div class="exam-question-box glass-panel">
+        <div class="exam-question-box">
           <div class="exam-question-header">
-            <span class="badge ${subjectBadgeClass}">${subjectName} • ${q.topic}</span>
-            <span class="badge-exam-ref"><i class="fa-solid fa-square-root-variable"></i> ${q.formulaTitle}</span>
+            <div class="exam-tag-group">
+              <span class="badge ${subjectBadgeClass}">
+                <i class="${isPhysics ? 'fa-solid fa-bolt' : 'fa-solid fa-calculator'}"></i> ${subjectName}
+              </span>
+              <span class="badge badge-topic">${q.topic}</span>
+            </div>
+            <span class="badge-exam-ref">
+              <i class="fa-solid fa-square-root-variable"></i> ${q.formulaTitle}
+            </span>
           </div>
 
           <div class="exam-question-text" id="exam-question-text">
@@ -396,44 +498,71 @@ export class Quiz {
           ${optionsHTML}
         </div>
 
-        <!-- Alternative Manual Input Fallback -->
-        <div class="exam-manual-input-box">
-          <span class="manual-input-prompt">${I18n.t('examOrInput')}</span>
-          <div class="manual-input-row">
-            <input
-              type="text"
-              id="exam-custom-input"
-              class="custom-text-input"
-              placeholder="${currentAnswer ? currentAnswer.value : I18n.t('answerPlaceholder')}"
-              value="${currentAnswer ? currentAnswer.value : ''}"
-            />
-            <button type="button" id="btn-save-custom-answer" class="btn btn-outline">
-              <i class="fa-solid fa-check"></i> ${I18n.t('examSubmitAnswer')}
-            </button>
+        <!-- Collapsible Manual Input Option (clean and out-of-the-way) -->
+        <div class="exam-manual-toggle-wrapper">
+          <button type="button" id="btn-toggle-manual-input" class="btn-toggle-manual">
+            <i class="fa-regular fa-keyboard"></i>
+            <span>${I18n.t('examOrInput')}</span>
+            <i class="fa-solid fa-chevron-down toggle-chevron" id="manual-toggle-icon"></i>
+          </button>
+          <div id="exam-manual-input-box" class="exam-manual-input-box" style="display: none;">
+            <div class="manual-input-row">
+              <input
+                type="text"
+                id="exam-custom-input"
+                class="custom-text-input"
+                placeholder="${currentAnswer ? currentAnswer.value : I18n.t('answerPlaceholder')}"
+                value="${currentAnswer ? currentAnswer.value : ''}"
+              />
+              <button type="button" id="btn-save-custom-answer" class="btn btn-outline">
+                <i class="fa-solid fa-check"></i> ${I18n.t('examSubmitAnswer')}
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Navigation Footer -->
         <div class="exam-navigation-footer">
-          <button type="button" id="btn-exam-prev" class="btn btn-outline" ${this.currentIndex === 0 ? 'disabled' : ''}>
-            <i class="fa-solid fa-arrow-left"></i> ${I18n.t('examPrevQuestion')}
+          <button type="button" id="btn-exam-prev" class="btn btn-outline btn-nav-step" ${this.currentIndex === 0 ? 'disabled' : ''}>
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>${I18n.t('examPrevQuestion')}</span>
+            <kbd class="key-hint">←</kbd>
           </button>
 
           <div class="exam-footer-center">
             <span class="answered-status">
-              ${currentAnswer ? `<i class="fa-solid fa-circle-check text-success"></i> ${I18n.t('examYourAnswer')} <strong>${currentAnswer.value}${q.unit ? ' ' + q.unit : ''}</strong>` : `<i class="fa-regular fa-circle"></i> ${I18n.t('examNotAnswered')}`}
+              ${currentAnswer ? `
+                <i class="fa-solid fa-circle-check text-success"></i>
+                <span>${I18n.t('examYourAnswer')}</span>
+                <strong class="user-ans-chip">${currentAnswer.optionLabel}: ${currentAnswer.value}${q.unit ? ' ' + q.unit : ''}</strong>
+              ` : `
+                <i class="fa-regular fa-circle text-muted"></i>
+                <span>${I18n.t('examNotAnswered')}</span>
+              `}
             </span>
           </div>
 
           ${this.currentIndex < total - 1 ? `
-            <button type="button" id="btn-exam-next" class="btn btn-primary">
-              ${I18n.t('examNextQuestion')} <i class="fa-solid fa-arrow-right"></i>
+            <button type="button" id="btn-exam-next" class="btn btn-primary btn-nav-step">
+              <span>${I18n.t('examNextQuestion')}</span>
+              <kbd class="key-hint">→</kbd>
+              <i class="fa-solid fa-arrow-right"></i>
             </button>
           ` : `
             <button type="button" id="btn-exam-submit-final" class="btn btn-primary btn-submit-final">
-              <i class="fa-solid fa-check-double"></i> ${I18n.t('examFinishBtn')}
+              <i class="fa-solid fa-check-double"></i>
+              <span>${I18n.t('examFinishBtn')}</span>
             </button>
           `}
+        </div>
+
+        <!-- Keyboard Shortcuts Bar -->
+        <div class="exam-shortcuts-bar">
+          <div class="shortcut-group">
+            <span class="shortcut-item"><kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> / <kbd>1-4</kbd> ${isKz ? 'жауап белгілеу' : 'выбор'}</span>
+            <span class="shortcut-item"><kbd>←</kbd><kbd>→</kbd> ${isKz ? 'ауысу' : 'навигация'}</span>
+            <span class="shortcut-item"><kbd>Enter</kbd> ${isKz ? 'келесі' : 'далее'}</span>
+          </div>
         </div>
       </div>
     `;
@@ -470,6 +599,20 @@ export class Quiz {
         this.renderQuestionScreen();
       });
     });
+
+    // Manual input toggle
+    const toggleManualBtn = modalBody.querySelector('#btn-toggle-manual-input');
+    const manualInputBox = modalBody.querySelector('#exam-manual-input-box');
+    const toggleIcon = modalBody.querySelector('#manual-toggle-icon');
+    if (toggleManualBtn && manualInputBox) {
+      toggleManualBtn.addEventListener('click', () => {
+        const isOpen = manualInputBox.style.display !== 'none';
+        manualInputBox.style.display = isOpen ? 'none' : 'block';
+        if (toggleIcon) {
+          toggleIcon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+      });
+    }
 
     const customInput = modalBody.querySelector('#exam-custom-input');
     const saveCustomBtn = modalBody.querySelector('#btn-save-custom-answer');
@@ -604,27 +747,39 @@ export class Quiz {
     const modalBody = this.modalEl.querySelector('.modal-body');
     if (!modalBody) return;
 
+    const isKz = I18n.getLanguage() === 'kz';
     const mins = Math.floor(elapsedSeconds / 60);
     const secs = elapsedSeconds % 60;
     const timeFormatted = `${mins} мин ${secs} сек`;
+    const speedPerQuestion = total > 0 ? Math.round(elapsedSeconds / total) : 0;
+    const mistakesCount = total - correct;
 
     let feedbackMsg = I18n.t('examScorePractice');
     let feedbackClass = 'score-practice';
+    let rankBadgeText = isKz ? 'Формулаларды қайталау қажет 🎯' : 'Нужно повторить формулы 🎯';
+
     if (accuracy >= 80) {
       feedbackMsg = I18n.t('examScoreExcellent');
       feedbackClass = 'score-excellent';
+      rankBadgeText = isKz ? 'ҰБТ Грант деңгейі! 🏆' : 'Уровень Гранта ЕНТ! 🏆';
     } else if (accuracy >= 50) {
       feedbackMsg = I18n.t('examScoreGood');
       feedbackClass = 'score-good';
+      rankBadgeText = isKz ? 'Өте жақсы нәтиже! 🚀' : 'Хороший результат! 🚀';
     }
+
+    // Circular progress SVG calculations (r=50, circumference ~ 314.16)
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDashoffset = circumference - (accuracy / 100) * circumference;
 
     // Question reviews list
     const reviewsHTML = this.questions.map((q, idx) => {
       const userAns = this.userAnswers[idx];
       const isCorrect = userAns && userAns.isCorrect;
       const statusIcon = isCorrect
-        ? '<i class="fa-solid fa-check text-success"></i>'
-        : (userAns ? '<i class="fa-solid fa-xmark text-danger"></i>' : '<i class="fa-solid fa-minus text-muted"></i>');
+        ? '<i class="fa-solid fa-check"></i>'
+        : (userAns ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-minus"></i>');
       const cardClass = isCorrect ? 'review-correct' : (userAns ? 'review-incorrect' : 'review-unanswered');
 
       const userDisplay = userAns ? `${userAns.value}${q.unit ? ' ' + q.unit : ''}` : I18n.t('examNotAnswered');
@@ -633,12 +788,13 @@ export class Quiz {
       const stepsHTML = q.steps.map(s => `<li class="solution-step">${s}</li>`).join('');
 
       return `
-        <div class="review-item glass-panel ${cardClass}">
+        <div class="review-item ${cardClass}">
           <div class="review-item-header">
             <div class="review-status-title">
-              <span class="review-icon">${statusIcon}</span>
-              <span class="review-num">${I18n.t('examQuestionCount')} ${idx + 1}:</span>
-              <strong>${q.formulaTitle}</strong>
+              <span class="review-status-badge ${isCorrect ? 'status-correct' : 'status-wrong'}">${statusIcon}</span>
+              <span class="review-num">${I18n.t('examQuestionCount')} ${idx + 1}</span>
+              <span class="review-badge-topic">${q.topic}</span>
+              <strong class="review-formula-name">${q.formulaTitle}</strong>
             </div>
             <button type="button" class="btn btn-outline btn-open-formula-ref" data-formula-id="${q.formulaId}">
               <i class="fa-solid fa-sliders"></i> ${I18n.t('examViewFormula')}
@@ -647,20 +803,21 @@ export class Quiz {
 
           <div class="review-question-text">${q.question}</div>
 
-          <div class="review-answers-row">
-            <div class="review-ans-col">
-              <span class="ans-label">${I18n.t('examYourAnswer')}</span>
-              <strong class="${isCorrect ? 'text-success' : 'text-danger'}">${userDisplay}</strong>
+          <div class="review-answers-grid">
+            <div class="review-ans-chip ${isCorrect ? 'chip-correct' : 'chip-wrong'}">
+              <span class="chip-label">${I18n.t('examYourAnswer')}:</span>
+              <strong class="chip-val">${userDisplay}</strong>
             </div>
-            <div class="review-ans-col">
-              <span class="ans-label">${I18n.t('examCorrectAnswer')}</span>
-              <strong class="text-success">${correctDisplay}</strong>
+            <div class="review-ans-chip chip-correct-target">
+              <span class="chip-label">${I18n.t('examCorrectAnswer')}:</span>
+              <strong class="chip-val">${correctDisplay}</strong>
             </div>
           </div>
 
           <details class="review-steps-details">
             <summary class="review-steps-summary">
-              <i class="fa-solid fa-chevron-right"></i> ${I18n.t('solutionTitle')}
+              <i class="fa-solid fa-chevron-right summary-arrow"></i>
+              <span>${I18n.t('solutionTitle')}</span>
             </summary>
             <ul class="solution-steps-list">
               ${stepsHTML}
@@ -672,32 +829,82 @@ export class Quiz {
 
     modalBody.innerHTML = `
       <div class="exam-scorecard-card">
-        <!-- Scorecard Header -->
+        <!-- Scorecard Header with Animated SVG Ring -->
         <div class="scorecard-header">
-          <div class="score-circle ${feedbackClass}">
-            <span class="score-big">${correct}</span>
-            <span class="score-total">/ ${total}</span>
+          <div class="score-ring-container">
+            <svg class="score-svg-ring" width="130" height="130" viewBox="0 0 120 120">
+              <circle class="score-ring-track" cx="60" cy="60" r="${radius}" />
+              <circle
+                class="score-ring-bar ${feedbackClass}"
+                cx="60"
+                cy="60"
+                r="${radius}"
+                stroke-dasharray="${circumference}"
+                stroke-dashoffset="${strokeDashoffset}"
+              />
+            </svg>
+            <div class="score-ring-inner">
+              <div class="score-ring-score">${correct}<span>/${total}</span></div>
+              <div class="score-ring-pct">${accuracy}%</div>
+            </div>
+          </div>
+
+          <div class="scorecard-badge-pill ${feedbackClass}">
+            ${rankBadgeText}
           </div>
 
           <h2 class="scorecard-title">${I18n.t('examScoreTitle')}</h2>
           <p class="scorecard-feedback">${feedbackMsg}</p>
         </div>
 
-        <!-- Metrics Row -->
+        <!-- Metrics Grid -->
         <div class="scorecard-metrics-grid">
           <div class="metric-item glass-panel">
-            <span class="metric-label"><i class="fa-solid fa-bullseye"></i> ${I18n.t('examAccuracy')}</span>
-            <strong class="metric-value">${accuracy}%</strong>
+            <div class="metric-icon metric-icon-acc"><i class="fa-solid fa-bullseye"></i></div>
+            <div class="metric-content">
+              <span class="metric-label">${I18n.t('examAccuracy')}</span>
+              <strong class="metric-value">${accuracy}%</strong>
+            </div>
           </div>
           <div class="metric-item glass-panel">
-            <span class="metric-label"><i class="fa-regular fa-clock"></i> ${I18n.t('examTimeSpent')}</span>
-            <strong class="metric-value">${timeFormatted}</strong>
+            <div class="metric-icon metric-icon-time"><i class="fa-regular fa-clock"></i></div>
+            <div class="metric-content">
+              <span class="metric-label">${I18n.t('examTimeSpent')}</span>
+              <strong class="metric-value">${timeFormatted}</strong>
+            </div>
           </div>
           <div class="metric-item glass-panel">
-            <span class="metric-label"><i class="fa-solid fa-check-double"></i> ${I18n.t('examCorrect')}</span>
-            <strong class="metric-value">${correct} / ${total}</strong>
+            <div class="metric-icon metric-icon-correct"><i class="fa-solid fa-check-double"></i></div>
+            <div class="metric-content">
+              <span class="metric-label">${I18n.t('examCorrect')}</span>
+              <strong class="metric-value">${correct} / ${total}</strong>
+            </div>
+          </div>
+          <div class="metric-item glass-panel">
+            <div class="metric-icon metric-icon-speed"><i class="fa-solid fa-gauge-high"></i></div>
+            <div class="metric-content">
+              <span class="metric-label">${isKz ? 'Орташа жылдамдық' : 'Средняя скорость'}</span>
+              <strong class="metric-value">${speedPerQuestion} с/сұрақ</strong>
+            </div>
           </div>
         </div>
+
+        ${mistakesCount > 0 ? `
+          <div class="scorecard-mistakes-callout glass-panel">
+            <div class="callout-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="callout-body">
+              <strong class="callout-title">
+                ${isKz ? `${mistakesCount} қате автоматты түрде «Қателер банкіне» қосылды` : `${mistakesCount} ошибок автоматически добавлены в Банк ошибок`}
+              </strong>
+              <p class="callout-desc">
+                ${isKz ? 'Сәйкес формулаларды қайталап, меңгеру үшін қателермен жұмыс жасаңыз.' : 'Повторите эти формулы и закрепите их в режиме отработки ошибок.'}
+              </p>
+            </div>
+            <button type="button" id="btn-open-mistakes-from-exam" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-arrow-right"></i> ${isKz ? 'Қателер банкі' : 'Банк ошибок'}
+            </button>
+          </div>
+        ` : ''}
 
         <!-- Actions -->
         <div class="scorecard-actions">
@@ -714,9 +921,12 @@ export class Quiz {
 
         <!-- Mistakes Review Breakdown -->
         <div class="scorecard-review-section">
-          <h3 class="review-section-title">
-            <i class="fa-solid fa-clipboard-check"></i> ${I18n.t('examReviewTitle')}
-          </h3>
+          <div class="review-section-header">
+            <h3 class="review-section-title">
+              <i class="fa-solid fa-clipboard-check"></i> ${I18n.t('examReviewTitle')}
+            </h3>
+            <span class="review-count-badge">${total} ${isKz ? 'сұрақ талданды' : 'вопросов разобрано'}</span>
+          </div>
           <div class="reviews-list">
             ${reviewsHTML}
           </div>
@@ -762,6 +972,14 @@ export class Quiz {
     const closeScorecardBtn = modalBody.querySelector('#btn-close-scorecard');
     if (closeScorecardBtn) {
       closeScorecardBtn.addEventListener('click', () => this.hide());
+    }
+
+    const openMistakesBtn = modalBody.querySelector('#btn-open-mistakes-from-exam');
+    if (openMistakesBtn) {
+      openMistakesBtn.addEventListener('click', () => {
+        this.hide();
+        MistakesBank.open();
+      });
     }
 
     modalBody.querySelectorAll('.btn-open-formula-ref').forEach(btn => {

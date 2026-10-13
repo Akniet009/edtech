@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <!-- Golden Ruler Gradient -->
+    <linearGradient id="goldGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="50%" stop-color="#eab308" />
+      <stop offset="100%" stop-color="#ca8a04" />
+    </linearGradient>
+
+    <!-- Outer Glow Filter -->
+    <filter id="glowMask" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Full Bleed Background (no rx) -->
+  <rect width="512" height="512" fill="url(#bgGradMask)" />
+
+  <!-- Atom Orbital Ellipses in Background -->
+  <ellipse cx="256" cy="256" rx="160" ry="60" fill="none" stroke="rgba(56, 189, 248, 0.25)" stroke-width="2.5" transform="rotate(-30 256 256)" />
+  <ellipse cx="256" cy="256" rx="160" ry="60" fill="none" stroke="rgba(129, 140, 248, 0.25)" stroke-width="2.5" transform="rotate(30 256 256)" />
+  <circle cx="370" cy="190" r="6" fill="#38bdf8" filter="url(#glowMask)" />
+  <circle cx="140" cy="320" r="5" fill="#818cf8" filter="url(#glowMask)" />
+
+  <!-- Central Scaled Drafting Triangle -->
+  <g transform="translate(256, 245) scale(0.85)">
+    <!-- Shadow -->
+    <path d="M -130 90 L 130 90 L -130 -170 Z" fill="rgba(0, 0, 0, 0.45)" filter="url(#glowMask)" transform="translate(6, 6)" />
+
+    <!-- Main Outer Triangle -->
+    <path d="M -130 90 L 130 90 L -130 -170 Z" fill="url(#goldGradMask)" stroke="#fef08a" stroke-width="4" stroke-linejoin="round" />
+
+    <!-- Inner Triangle Cutout -->
+    <path d="M -95 65 L 60 65 L -95 -90 Z" fill="#0f172a" stroke="#ca8a04" stroke-width="2" stroke-linejoin="round" />
+
+    <!-- Ruler Measurement Ticks Along Bottom Edge -->
+    <line x1="-120" y1="90" x2="-120" y2="76" stroke="#713f12" stroke-width="3" />
+    <line x1="-80" y1="90" x2="-80" y2="76" stroke="#713f12" stroke-width="3" />
+    <line x1="-40" y1="90" x2="-40" y2="76" stroke="#713f12" stroke-width="3" />
+    <line x1="0" y1="90" x2="0" y2="74" stroke="#713f12" stroke-width="3.5" />
+    <line x1="40" y1="90" x2="40" y2="76" stroke="#713f12" stroke-width="3" />
+    <line x1="80" y1="90" x2="80" y2="76" stroke="#713f12" stroke-width="3" />
+    <line x1="120" y1="90" x2="120" y2="76" stroke="#713f12" stroke-width="3" />
+
+    <!-- Ruler Measurement Ticks Along Vertical Edge -->
+    <line x1="-130" y1="80" x2="-116" y2="80" stroke="#713f12" stroke-width="3" />
+    <line x1="-130" y1="30" x2="-116" y2="30" stroke="#713f12" stroke-width="3" />
+    <line x1="-130" y1="-20" x2="-116" y2="-20" stroke="#713f12" stroke-width="3" />
+    <line x1="-130" y1="-70" x2="-116" y2="-70" stroke="#713f12" stroke-width="3" />
+    <line x1="-130" y1="-120" x2="-116" y2="-120" stroke="#713f12" stroke-width="3" />
+  </g>
+
+  <!-- Glowing Formula Element -->
+  <g transform="translate(216, 235)">
+    <text x="0" y="0" font-family="'JetBrains Mono', 'Segoe UI', monospace" font-size="44" font-weight="800" fill="#38bdf8" filter="url(#glowMask)">∑</text>
+  </g>
+
+  <!-- Centered Title within safe zone -->
+  <text x="256" y="380" font-family="'Inter', -apple-system, sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="2">FORMULAB</text>
+  <text x="256" y="405" font-family="'Inter', -apple-system, sans-serif" font-size="14" font-weight="600" fill="#38bdf8" text-anchor="middle" letter-spacing="3">ҰБТ • 2026</text>
+</svg>

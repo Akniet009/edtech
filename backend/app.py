@@ -41,8 +41,24 @@ if (FRONTEND_DIR / "styles").exists():
     app.mount("/styles", StaticFiles(directory=str(FRONTEND_DIR / "styles")), name="styles")
 if (FRONTEND_DIR / "js").exists():
     app.mount("/js", StaticFiles(directory=str(FRONTEND_DIR / "js")), name="js")
+if (FRONTEND_DIR / "icons").exists():
+    app.mount("/icons", StaticFiles(directory=str(FRONTEND_DIR / "icons")), name="icons")
 if (FRONTEND_DIR / "resources").exists():
     app.mount("/resources", StaticFiles(directory=str(FRONTEND_DIR / "resources")), name="resources")
+
+@app.get("/manifest.json")
+def get_manifest():
+    manifest_path = FRONTEND_DIR / "manifest.json"
+    if manifest_path.exists():
+        return FileResponse(str(manifest_path), media_type="application/manifest+json")
+    raise HTTPException(status_code=404, detail="Manifest not found")
+
+@app.get("/sw.js")
+def get_service_worker():
+    sw_path = FRONTEND_DIR / "sw.js"
+    if sw_path.exists():
+        return FileResponse(str(sw_path), media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="Service worker not found")
 
 class TaskResponse(BaseModel):
     formula_id: str

@@ -1400,5 +1400,1517 @@ export const FORMULAS_DATA = [
         ]
       };
     }
+  },
+
+  // ==========================================
+  // --- ADDITIONAL HIGH-YIELD UNT FORMULAS ---
+  // ==========================================
+
+  // --- 1. СИЛА ТРЕНИЯ (ҮЙКЕЛІС КҮШІ) ---
+  {
+    id: "friction_force",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Динамика",
+    title: "Сила трения скольжения",
+    latex: "F_{\\text{тр}} = \\mu N",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Сила трения скольжения прямо пропорциональна коэффициенту трения и силе нормальной реакции опоры.",
+    variables: [
+      { symbol: "\\mu", name: "Коэффициент трения", unit: "", min: 0.05, max: 0.8, default: 0.2, step: 0.05 },
+      { symbol: "N", name: "Сила реакции опоры", unit: "Н", min: 10, max: 500, default: 100, step: 10 }
+    ],
+    targetVariable: { symbol: "F_{\\text{тр}}", name: "Сила трения", unit: "Н" },
+    calculate: (mu, N) => Math.round(mu * N * 10) / 10,
+    visualizationType: "force_vector",
+    taskGenerator: () => {
+      const muList = [0.1, 0.2, 0.25, 0.3, 0.4, 0.5];
+      const mu = muList[Math.floor(Math.random() * muList.length)];
+      const m = Math.floor(Math.random() * 8) + 2;
+      const N = m * 10;
+      const F = Math.round(mu * N * 10) / 10;
+      return {
+        question: `(ЕНТ • Механика) Брусок массой $m = ${m}\\text{ кг}$ скользит по горизонтальной плоскости с коэффициентом трения $\\mu = ${mu}$. Найдите силу трения $F_{\\text{тр}}$ (при $g = 10\\text{ м/с}^2$).`,
+        targetSymbol: "F_{\\text{тр}}",
+        correctAnswer: F,
+        unit: "Н",
+        steps: [
+          `**Шаг 1:** Сила реакции опоры на горизонтали: $N = mg = ${m} \\cdot 10 = ${N}\\text{ Н}$.`,
+          `**Шаг 2:** Закон сухого трения: $F_{\\text{тр}} = \\mu N = ${mu} \\cdot ${N} = ${F}\\text{ Н}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 2. СИЛА АРХИМЕДА (АРХИМЕД КҮШІ) ---
+  {
+    id: "archimedes_force",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Гидростатика",
+    title: "Сила Архимеда (Выталкивающая сила)",
+    latex: "F_A = \\rho g V",
+    examTags: ["ЕНТ", "ҰБТ", "ОГЭ"],
+    description: "На тело, погруженное в жидкость или газ, действует выталкивающая сила, равная весу вытесненной им жидкости.",
+    variables: [
+      { symbol: "\\rho", name: "Плотность жидкости", unit: "кг/м³", min: 800, max: 1200, default: 1000, step: 50 },
+      { symbol: "V", name: "Объем тела", unit: "м³", min: 0.001, max: 0.05, default: 0.01, step: 0.001 }
+    ],
+    targetVariable: { symbol: "F_A", name: "Сила Архимеда", unit: "Н" },
+    calculate: (rho, V) => Math.round(rho * 10 * V),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const rho = 1000;
+      const vLiters = Math.floor(Math.random() * 5) + 2; // 2..6 л
+      const V = vLiters * 0.001;
+      const F_A = rho * 10 * V;
+      return {
+        question: `(ЕНТ • Гидростатика) Тело объемом $V = ${vLiters}\\text{ л} = ${V}\\text{ м}^3$ полностью погружено в воду ($\\rho = 1000\\text{ кг/м}^3$). Определите силу Архимеда $F_A$ (при $g = 10\\text{ м/с}^2$).`,
+        targetSymbol: "F_A",
+        correctAnswer: F_A,
+        unit: "Н",
+        steps: [
+          `**Шаг 1:** Закон Архимеда: $F_A = \\rho_{\\text{ж}} g V$.`,
+          `**Шаг 2:** Подставим значения: $F_A = 1000 \\cdot 10 \\cdot ${V} = ${F_A}\\text{ Н}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 3. ГИДРОСТАТИЧЕСКОЕ ДАВЛЕНИЕ (ГИДРОСТАТИКАЛЫҚ ҚЫСЫМ) ---
+  {
+    id: "hydrostatic_pressure",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Гидростатика",
+    title: "Гидростатическое давление",
+    latex: "p = \\rho g h",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Давление неподвижного столба жидкости на дно сосуда пропорционально плотности жидкости и глубине погружения.",
+    variables: [
+      { symbol: "\\rho", name: "Плотность жидкости", unit: "кг/м³", min: 700, max: 1200, default: 1000, step: 50 },
+      { symbol: "h", name: "Глубина столба", unit: "м", min: 1, max: 50, default: 10, step: 1 }
+    ],
+    targetVariable: { symbol: "p", name: "Давление", unit: "кПа" },
+    calculate: (rho, h) => Math.round((rho * 10 * h) / 1000),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const h = Math.floor(Math.random() * 15) + 5;
+      const p = Math.round((1000 * 10 * h) / 1000);
+      return {
+        question: `(ЕНТ • Гидростатика) Водолаз погрузился в озеро на глубину $h = ${h}\\text{ м}$. Найдите гидростатическое давление воды в кПа ($\\rho = 1000\\text{ кг/м}^3$, $g = 10\\text{ м/с}^2$).`,
+        targetSymbol: "p",
+        correctAnswer: p,
+        unit: "кПа",
+        steps: [
+          `**Шаг 1:** Формула гидростатического давления: $p = \\rho g h$.`,
+          `**Шаг 2:** $p = 1000 \\cdot 10 \\cdot ${h} = ${p * 1000}\\text{ Па} = ${p}\\text{ кПа}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 4. МЕХАНИЧЕСКАЯ РАБОТА (МЕХАНИКАЛЫҚ ЖҰМЫС) ---
+  {
+    id: "mechanical_work",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Законы сохранения",
+    title: "Механическая работа",
+    latex: "A = F s \\cos\\alpha",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Механическая работа постоянной силы равна произведению модуля силы на модуль перемещения и косинус угла между ними.",
+    variables: [
+      { symbol: "F", name: "Сила", unit: "Н", min: 10, max: 500, default: 60, step: 10 },
+      { symbol: "s", name: "Перемещение", unit: "м", min: 1, max: 50, default: 15, step: 1 }
+    ],
+    targetVariable: { symbol: "A", name: "Работа", unit: "Дж" },
+    calculate: (F, s) => F * s,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      const F = (Math.floor(Math.random() * 8) + 2) * 10;
+      const s = Math.floor(Math.random() * 10) + 2;
+      const A = F * s;
+      return {
+        question: `(ЕНТ • Механика) Под действием горизонтальной силы $F = ${F}\\text{ Н}$ тело переместилось на расстояние $s = ${s}\\text{ м}$ вдоль направления силы. Найдите совершенную работу $A$.`,
+        targetSymbol: "A",
+        correctAnswer: A,
+        unit: "Дж",
+        steps: [
+          `**Шаг 1:** Так как сила сонаправлена с перемещением, $\\cos(0^\\circ) = 1$. Формула: $A = F s$.`,
+          `**Шаг 2:** $A = ${F} \\cdot ${s} = ${A}\\text{ Дж}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 5. МЕХАНИЧЕСКАЯ МОЩНОСТЬ (МЕХАНИКАЛЫҚ ҚУАТ) ---
+  {
+    id: "mechanical_power",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Законы сохранения",
+    title: "Механическая мощность",
+    latex: "N = \\frac{A}{t} = F v",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Мощность — физическая величина, равная отношению совершенной работы ко времени, за которое она была совершена.",
+    variables: [
+      { symbol: "A", name: "Работа", unit: "Дж", min: 100, max: 5000, default: 1200, step: 50 },
+      { symbol: "t", name: "Время", unit: "с", min: 1, max: 60, default: 10, step: 1 }
+    ],
+    targetVariable: { symbol: "N", name: "Мощность", unit: "Вт" },
+    calculate: (A, t) => Math.round(A / t),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const t = Math.floor(Math.random() * 8) + 4;
+      const N = (Math.floor(Math.random() * 8) + 2) * 50;
+      const A = N * t;
+      return {
+        question: `(ЕНТ • Механика) Двигатель за время $t = ${t}\\text{ с}$ совершает работу $A = ${A}\\text{ Дж}$. Определите полезную мощность двигателя $N$ в ваттах.`,
+        targetSymbol: "N",
+        correctAnswer: N,
+        unit: "Вт",
+        steps: [
+          `**Шаг 1:** Мощность равна отношению работы ко времени: $N = \\frac{A}{t}$.`,
+          `**Шаг 2:** $N = \\frac{${A}}{${t}} = ${N}\\text{ Вт}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 6. ПЕРИОД МАТЕМАТИЧЕСКОГО МАЯТНИКА (МАТЕМАТИКАЛЫҚ МАЯТНИК) ---
+  {
+    id: "math_pendulum",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Колебания и волны",
+    title: "Период математического маятника",
+    latex: "T = 2\\pi \\sqrt{\\frac{l}{g}}",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Период малых колебаний математического маятника зависит от длины нити и ускорения свободного падения, но не зависит от массы.",
+    variables: [
+      { symbol: "l", name: "Длина нити", unit: "м", min: 0.1, max: 10, default: 2.5, step: 0.1 }
+    ],
+    targetVariable: { symbol: "T", name: "Период колебаний", unit: "с" },
+    calculate: (l) => Math.round(2 * Math.PI * Math.sqrt(l / 9.8) * 100) / 100,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      const l = 4;
+      const T = Math.round(2 * 3.14 * Math.sqrt(4 / 10) * 10) / 10;
+      return {
+        question: `(ЕНТ • Колебания) Во сколько раз изменится период колебаний математического маятника, если длину нити увеличить в 4 раза?`,
+        targetSymbol: "k",
+        correctAnswer: 2,
+        unit: "раза",
+        steps: [
+          `**Шаг 1:** Формула периода: $T = 2\\pi \\sqrt{\\frac{l}{g}}$, значит $T \\sim \\sqrt{l}$.`,
+          `**Шаг 2:** При увеличении длины в 4 раза период увеличится в $\\sqrt{4} = 2$ раза.`
+        ]
+      };
+    }
+  },
+
+  // --- 7. ПЕРИОД ПРУЖИННОГО МАЯТНИКА (СЕРІППЕЛІ МАЯТНИК) ---
+  {
+    id: "spring_pendulum",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Колебания и волны",
+    title: "Период пружинного маятника",
+    latex: "T = 2\\pi \\sqrt{\\frac{m}{k}}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Период свободных колебаний пружинного маятника зависит от массы груза и жесткости пружины.",
+    variables: [
+      { symbol: "m", name: "Масса груза", unit: "кг", min: 0.1, max: 10, default: 1, step: 0.1 },
+      { symbol: "k", name: "Жесткость пружины", unit: "Н/м", min: 10, max: 500, default: 100, step: 10 }
+    ],
+    targetVariable: { symbol: "T", name: "Период колебаний", unit: "с" },
+    calculate: (m, k) => Math.round(2 * Math.PI * Math.sqrt(m / k) * 100) / 100,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Колебания) Массу груза на пружине увеличили в 9 раз. Во сколько раз увеличится период колебаний маятника?`,
+        targetSymbol: "k",
+        correctAnswer: 3,
+        unit: "раза",
+        steps: [
+          `**Шаг 1:** Период пружинного маятника: $T = 2\\pi \\sqrt{\\frac{m}{k}}$, т.е. $T \\sim \\sqrt{m}$.`,
+          `**Шаг 2:** При $m' = 9m$, период изменится в $\\sqrt{9} = 3$ раза.`
+        ]
+      };
+    }
+  },
+
+  // --- 8. ФОРМУЛА ТОМСОНА (ТОМСОН ФОРМУЛАСЫ) ---
+  {
+    id: "thomson_formula",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Электромагнитные колебания",
+    title: "Формула Томсона (Колебательный контур)",
+    latex: "T = 2\\pi \\sqrt{L C}",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Период свободных электромагнитных колебаний в идеальном колебательном контуре определяется индуктивностью и емкостью.",
+    variables: [
+      { symbol: "L", name: "Индуктивность катушки", unit: "Гн", min: 0.01, max: 2, default: 0.1, step: 0.05 },
+      { symbol: "C", name: "Емкость конденсатора", unit: "мкФ", min: 1, max: 100, default: 25, step: 1 }
+    ],
+    targetVariable: { symbol: "T", name: "Период", unit: "мс" },
+    calculate: (L, C) => Math.round(2 * Math.PI * Math.sqrt(L * (C * 1e-6)) * 1000 * 100) / 100,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Колебательный контур) Емкость конденсатора контура уменьшили в 4 раза, а индуктивность не меняли. Как изменится период свободных колебаний? (Укажите число: во сколько раз уменьшится)`,
+        targetSymbol: "n",
+        correctAnswer: 2,
+        unit: "раза",
+        steps: [
+          `**Шаг 1:** Формула Томсона: $T = 2\\pi \\sqrt{LC}$, следовательно $T \\sim \\sqrt{C}$.`,
+          `**Шаг 2:** При уменьшении $C$ в 4 раза период $T$ уменьшится в $\\sqrt{4} = 2$ раза.`
+        ]
+      };
+    }
+  },
+
+  // --- 9. ЗАКОН ЭЛЕКТРОМАГНИТНОЙ ИНДУКЦИИ ФАРАДЕЯ (ФАРАДЕЙ ЗАҢЫ) ---
+  {
+    id: "faraday_induction",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Электромагнитная индукция",
+    title: "Закон электромагнитной индукции Фарадея",
+    latex: "\\mathcal{E}_i = -\\frac{\\Delta \\Phi}{\\Delta t}",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "ЭДС индукции в замкнутом проводящем контуре пропорциональна скорости изменения магнитного потока через поверхность контура.",
+    variables: [
+      { symbol: "\\Delta\\Phi", name: "Изменение магнитного потока", unit: "Вб", min: 0.1, max: 5, default: 1.2, step: 0.1 },
+      { symbol: "\\Delta t", name: "Интервал времени", unit: "с", min: 0.05, max: 2, default: 0.3, step: 0.05 }
+    ],
+    targetVariable: { symbol: "\\mathcal{E}_i", name: "ЭДС индукции", unit: "В" },
+    calculate: (dPhi, dt) => Math.round((dPhi / dt) * 10) / 10,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const dPhi = (Math.floor(Math.random() * 8) + 2) * 0.1;
+      const dt = 0.05;
+      const E = Math.round(dPhi / dt);
+      return {
+        question: `(ЕНТ • Электродинамика) За время $\\Delta t = 0.05\\text{ с}$ магнитный поток через контур равномерно изменился на $\\Delta \\Phi = ${dPhi.toFixed(2)}\\text{ Вб}$. Найдите модуль ЭДС индукции $\\mathcal{E}_i$ в вольтах.`,
+        targetSymbol: "\\mathcal{E}_i",
+        correctAnswer: E,
+        unit: "В",
+        steps: [
+          `**Шаг 1:** По закону Фарадея модуль ЭДС: $|\\mathcal{E}_i| = \\frac{\\Delta \\Phi}{\\Delta t}$.`,
+          `**Шаг 2:** $|\\mathcal{E}_i| = \\frac{${dPhi.toFixed(2)}}{0.05} = ${E}\\text{ В}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 10. УРАВНЕНИЕ ЭЙНШТЕЙНА ДЛЯ ФОТОЭФФЕКТА (ФОТОЭФФЕКТ) ---
+  {
+    id: "photoelectric_effect",
+    subject: "physics",
+    topic: "Оптика",
+    subtopic: "Квантовая физика",
+    title: "Уравнение Эйнштейна для фотоэффекта",
+    latex: "h \\nu = A_{\\text{вых}} + E_k",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Энергия падающего кванта света идет на работу выхода электрона из металла и сообщение ему максимальной кинетической энергии.",
+    variables: [
+      { symbol: "h\\nu", name: "Энергия фотона", unit: "эВ", min: 1, max: 10, default: 5.2, step: 0.2 },
+      { symbol: "A", name: "Работа выхода", unit: "эВ", min: 1, max: 5, default: 2.2, step: 0.1 }
+    ],
+    targetVariable: { symbol: "E_k", name: "Кинетическая энергия", unit: "эВ" },
+    calculate: (hNu, A) => Math.max(0, Math.round((hNu - A) * 10) / 10),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const A = Math.floor(Math.random() * 3) + 2;
+      const Ek = Math.floor(Math.random() * 4) + 1;
+      const hNu = A + Ek;
+      return {
+        question: `(ЕНТ • Квантовая физика) Энергия фотона, падающего на катод, равна $h\\nu = ${hNu}\\text{ эВ}$. Работа выхода электронов $A_{\\text{вых}} = ${A}\\text{ эВ}$. Какова максимальная кинетическая энергия фотоэлектронов $E_k$ в эВ?`,
+        targetSymbol: "E_k",
+        correctAnswer: Ek,
+        unit: "эВ",
+        steps: [
+          `**Шаг 1:** Уравнение Эйнштейна: $h\\nu = A_{\\text{вых}} + E_k \\implies E_k = h\\nu - A_{\\text{вых}}$.`,
+          `**Шаг 2:** $E_k = ${hNu} - ${A} = ${Ek}\\text{ эВ}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 11. СОПРОТИВЛЕНИЕ ПРОВОДНИКА (ӨТКІЗГІШ КЕДЕРГІСІ) ---
+  {
+    id: "conductor_resistance",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Постоянный ток",
+    title: "Электрическое сопротивление проводника",
+    latex: "R = \\rho \\frac{l}{S}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Сопротивление однородного проводника прямо пропорционально его длине и обратно пропорционально площади поперечного сечения.",
+    variables: [
+      { symbol: "l", name: "Длина проводника", unit: "м", min: 10, max: 500, default: 100, step: 10 },
+      { symbol: "S", name: "Сечение проводника", unit: "мм²", min: 0.5, max: 10, default: 2, step: 0.5 }
+    ],
+    targetVariable: { symbol: "R", name: "Сопротивление", unit: "Ом" },
+    calculate: (l, S) => Math.round((0.017 * l / S) * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Электродинамика) Длину медного проводника увеличили в 3 раза, а площадь поперечного сечения уменьшили в 2 раза. Во сколько раз увеличилось сопротивление проводника?`,
+        targetSymbol: "k",
+        correctAnswer: 6,
+        unit: "раз",
+        steps: [
+          `**Шаг 1:** Формула сопротивления: $R = \\rho \\frac{l}{S}$.`,
+          `**Шаг 2:** $R' = \\rho \\frac{3l}{S/2} = 6 \\cdot \\left(\\rho \\frac{l}{S}\\right) = 6R$. Сопротивление выросло в 6 раз.`
+        ]
+      };
+    }
+  },
+
+  // --- 12. СИЛА АМПЕРА (АМПЕР КҮШІ) ---
+  {
+    id: "ampere_force",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Магнитное поле",
+    title: "Сила Ампера (Проводник с током в поле)",
+    latex: "F_A = I B L \\sin\\alpha",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Сила, с которой магнитное поле действует на проводник с током, прямо пропорциональна силе тока, индукции поля и длине проводника.",
+    variables: [
+      { symbol: "I", name: "Сила тока", unit: "А", min: 1, max: 20, default: 5, step: 0.5 },
+      { symbol: "B", name: "Магнитная индукция", unit: "Тл", min: 0.1, max: 2, default: 0.4, step: 0.05 },
+      { symbol: "L", name: "Длина проводника", unit: "м", min: 0.1, max: 2, default: 0.5, step: 0.1 }
+    ],
+    targetVariable: { symbol: "F_A", name: "Сила Ампера", unit: "Н" },
+    calculate: (I, B, L) => Math.round(I * B * L * 100) / 100,
+    visualizationType: "force_vector",
+    taskGenerator: () => {
+      const I = Math.floor(Math.random() * 6) + 2;
+      const B = 0.5;
+      const L = 0.2;
+      const F = Math.round(I * B * L * 100) / 100;
+      return {
+        question: `(ЕНТ • Магнетизм) Проводник длиной $L = 0.2\\text{ м}$ с током $I = ${I}\\text{ А}$ расположен перпендикулярно линиям однородного магнитного поля с индукцией $B = 0.5\\text{ Тл}$. Найдите силу Ампера $F_A$.`,
+        targetSymbol: "F_A",
+        correctAnswer: F,
+        unit: "Н",
+        steps: [
+          `**Шаг 1:** Так как проводник перпендикулярен линиям, $\\sin(90^\\circ) = 1$. Формула: $F_A = I B L$.`,
+          `**Шаг 2:** $F_A = ${I} \\cdot 0.5 \\cdot 0.2 = ${F}\\text{ Н}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 13. СИЛА ЛОРЕНЦА (ЛОРЕНЦ КҮШІ) ---
+  {
+    id: "lorentz_force",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Магнитное поле",
+    title: "Сила Лоренца (Заряд в магнитном поле)",
+    latex: "F_L = q v B \\sin\\alpha",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Сила, действующая на движущуюся заряженную частицу в магнитном поле со стороны поля.",
+    variables: [
+      { symbol: "q", name: "Заряд частицы", unit: "мкКл", min: 1, max: 10, default: 2, step: 1 },
+      { symbol: "v", name: "Скорость", unit: "м/с", min: 100, max: 2000, default: 500, step: 100 },
+      { symbol: "B", name: "Индукция поля", unit: "Тл", min: 0.1, max: 2, default: 0.4, step: 0.1 }
+    ],
+    targetVariable: { symbol: "F_L", name: "Сила Лоренца", unit: "мН" },
+    calculate: (q, v, B) => Math.round(q * 1e-6 * v * B * 1000 * 10) / 10,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Магнетизм) Протон влетел в однородное магнитное поле параллельно линиям магнитной индукции ($\\alpha = 0^\\circ$). Чему равна действующая на него сила Лоренца?`,
+        targetSymbol: "F_L",
+        correctAnswer: 0,
+        unit: "Н",
+        steps: [
+          `**Шаг 1:** Формула силы Лоренца: $F_L = q v B \\sin\\alpha$.`,
+          `**Шаг 2:** Так как угол $\\alpha = 0^\\circ$, $\\sin(0^\\circ) = 0$, поэтому $F_L = 0\\text{ Н}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 14. ЗАКОН ПРЕЛОМЛЕНИЯ СВЕТА СНЕЛЛИУСА (СНЕЛЛИУС ЗАҢЫ) ---
+  {
+    id: "snell_law",
+    subject: "physics",
+    topic: "Оптика",
+    subtopic: "Геометрическая оптика",
+    title: "Закон преломления света (Закон Снеллиуса)",
+    latex: "\\frac{\\sin\\alpha}{\\sin\\beta} = \\frac{n_2}{n_1} = n_{21}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Отношение синуса угла падения к синусу угла преломления равно относительному показателю преломления второй среды относительно первой.",
+    variables: [
+      { symbol: "n_1", name: "Показатель 1-й среды", unit: "", min: 1, max: 2, default: 1, step: 0.1 },
+      { symbol: "n_2", name: "Показатель 2-й среды", unit: "", min: 1, max: 2.5, default: 1.5, step: 0.1 }
+    ],
+    targetVariable: { symbol: "n_{21}", name: "Относительный показатель", unit: "" },
+    calculate: (n1, n2) => Math.round((n2 / n1) * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Оптика) Луч света падает из воздуха ($n_1 = 1$) в стекло под углом $\\alpha = 45^\\circ$. Если угол преломления равен $\\beta = 30^\\circ$, найдите показатель преломления стекла $n_2$ (с точностью до сотых, $\\sqrt{2} \\approx 1.41$).`,
+        targetSymbol: "n_2",
+        correctAnswer: 1.41,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Закон Снеллиуса: $\\frac{\\sin\\alpha}{\\sin\\beta} = n_2$.`,
+          `**Шаг 2:** $n_2 = \\frac{\\sin 45^\\circ}{\\sin 30^\\circ} = \\frac{\\sqrt{2}/2}{1/2} = \\sqrt{2} \\approx 1.41$.`
+        ]
+      };
+    }
+  },
+
+  // --- 15. ОСНОВНОЕ УРАВНЕНИЕ МКТ ДЛЯ ДАВЛЕНИЯ (ИДЕАЛ ГАЗ ҚЫСЫМЫ) ---
+  {
+    id: "ideal_gas_pressure",
+    subject: "physics",
+    topic: "Термодинамика",
+    subtopic: "Молекулярно-кинетическая теория",
+    title: "Давление идеального газа через концентрацию",
+    latex: "p = n k T",
+    examTags: ["ЕНТ", "ҰБТ", "ЕГЭ"],
+    description: "Давление идеального газа прямо пропорционально концентрации молекул и абсолютной температуре (постоянная Больцмана k).",
+    variables: [
+      { symbol: "T", name: "Температура", unit: "К", min: 100, max: 600, default: 300, step: 20 },
+      { symbol: "n", name: "Концентрация (10²⁵ м⁻³)", unit: "", min: 1, max: 10, default: 2, step: 0.5 }
+    ],
+    targetVariable: { symbol: "p", name: "Давление", unit: "кПа" },
+    calculate: (T, n) => Math.round(n * 1e25 * 1.38e-23 * T / 1000 * 10) / 10,
+    visualizationType: "pv_diagram",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • МКТ) При постоянной температуре концентрацию молекул идеального газа увеличили в 3 раза. Во сколько раз увеличилось давление газа?`,
+        targetSymbol: "k",
+        correctAnswer: 3,
+        unit: "раза",
+        steps: [
+          `**Шаг 1:** Уравнение МКТ: $p = n k T$, т.е. при $T = \\text{const}$ давление прямо пропорционально концентрации $p \\sim n$.`,
+          `**Шаг 2:** Если концентрация выросла в 3 раза, давление также увеличится в 3 раза.`
+        ]
+      };
+    }
+  },
+
+  // --- 16. БЕСКОНЕЧНО УБЫВАЮЩАЯ ГЕОМЕТРИЧЕСКАЯ ПРОГРЕССИЯ ---
+  {
+    id: "infinite_geometric_series",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Прогрессии",
+    title: "Сумма бесконечно убывающей геометрической прогрессии",
+    latex: "S = \\frac{b_1}{1 - q} \\quad (|q| < 1)",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Формула предельной суммы всех членов геометрической прогрессии со знаменателем, модуль которого строго меньше 1.",
+    variables: [
+      { symbol: "b_1", name: "Первый член b₁", unit: "", min: 2, max: 60, default: 18, step: 2 },
+      { symbol: "q", name: "Знаменатель q", unit: "", min: 0.1, max: 0.9, default: 0.5, step: 0.1 }
+    ],
+    targetVariable: { symbol: "S", name: "Сумма прогрессии", unit: "" },
+    calculate: (b1, q) => Math.round((b1 / (1 - q)) * 10) / 10,
+    visualizationType: "progression_bars",
+    taskGenerator: () => {
+      const b1 = (Math.floor(Math.random() * 6) + 2) * 3;
+      const q = 0.5;
+      const S = b1 / (1 - q);
+      return {
+        question: `(ЕНТ • Рустюмов) Найдите сумму бесконечно убывающей геометрической прогрессии, если $b_1 = ${b1}$ и знаменатель $q = \\frac{1}{2}$.`,
+        targetSymbol: "S",
+        correctAnswer: S,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Применим формулу суммы бесконечно убывающей прогрессии: $S = \\frac{b_1}{1 - q}$.`,
+          `**Шаг 2:** $S = \\frac{${b1}}{1 - 0.5} = \\frac{${b1}}{0.5} = ${S}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 17. ОБЪЕМ КОНУСА (КОНУС КӨЛЕМІ) ---
+  {
+    id: "cone_volume",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Стереометрия",
+    title: "Объем кругового конуса",
+    latex: "V = \\frac{1}{3} \\pi R^2 h",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Объем круглого конуса равен одной трети произведения площади основания на высоту.",
+    variables: [
+      { symbol: "R", name: "Радиус основания", unit: "см", min: 1, max: 20, default: 6, step: 1 },
+      { symbol: "h", name: "Высота конуса", unit: "см", min: 1, max: 30, default: 10, step: 1 }
+    ],
+    targetVariable: { symbol: "V", name: "Объем конуса", unit: "см³" },
+    calculate: (R, h) => Math.round((1/3) * Math.PI * R * R * h),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const R = 3;
+      const h = Math.floor(Math.random() * 5) + 4;
+      const V_pi = (1/3) * (R * R) * h;
+      return {
+        question: `(ЕНТ • Стереометрия) Радиус основания конуса равен $R = 3\\text{ см}$, а высота $h = ${h}\\text{ см}$. Найдите объем конуса $V$ (значение $V / \\pi$).`,
+        targetSymbol: "V/\\pi",
+        correctAnswer: V_pi,
+        unit: "см³",
+        steps: [
+          `**Шаг 1:** Формула объема конуса: $V = \\frac{1}{3} \\pi R^2 h$.`,
+          `**Шаг 2:** $V/\\pi = \\frac{1}{3} \\cdot 3^2 \\cdot ${h} = 3 \\cdot ${h} = ${V_pi}\\text{ см}^3$.`
+        ]
+      };
+    }
+  },
+
+  // --- 18. ОБЪЕМ ШАРА И ПЛОЩАДЬ СФЕРЫ (ШАР КӨЛЕМІ) ---
+  {
+    id: "sphere_volume_surface",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Стереометрия",
+    title: "Объем шара и площадь сферы",
+    latex: "V = \\frac{4}{3} \\pi R^3, \\quad S = 4 \\pi R^2",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Объем шара пропорционален кубу его радиуса, а площадь поверхности сферы — квадрату радиуса.",
+    variables: [
+      { symbol: "R", name: "Радиус шара", unit: "см", min: 1, max: 15, default: 3, step: 1 }
+    ],
+    targetVariable: { symbol: "V", name: "Объем шара", unit: "см³" },
+    calculate: (R) => Math.round((4/3) * Math.PI * Math.pow(R, 3)),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const R = 3;
+      const V_pi = (4/3) * Math.pow(3, 3);
+      return {
+        question: `(ЕНТ • Стереометрия) Радиус шара равен $R = 3\\text{ см}$. Чему равен объем шара, деленный на $\\pi$ (т.е. $V/\\pi$)?`,
+        targetSymbol: "V/\\pi",
+        correctAnswer: V_pi,
+        unit: "см³",
+        steps: [
+          `**Шаг 1:** Формула объема шара: $V = \\frac{4}{3} \\pi R^3$.`,
+          `**Шаг 2:** $V/\\pi = \\frac{4}{3} \\cdot 3^3 = 4 \\cdot 9 = 36\\text{ см}^3$.`
+        ]
+      };
+    }
+  },
+
+  // --- 19. ОБЪЕМ ПАРАЛЛЕЛЕПИПЕДА (ПАРАЛЛЕЛЕПИПЕД КӨЛЕМІ) ---
+  {
+    id: "parallelepiped_volume",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Стереометрия",
+    title: "Объем прямоугольного параллелепипеда",
+    latex: "V = a \\cdot b \\cdot c",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Объем прямоугольного параллелепипеда равен произведению его трех измерений: длины, ширины и высоты.",
+    variables: [
+      { symbol: "a", name: "Длина a", unit: "см", min: 1, max: 30, default: 6, step: 1 },
+      { symbol: "b", name: "Ширина b", unit: "см", min: 1, max: 30, default: 5, step: 1 },
+      { symbol: "c", name: "Высота c", unit: "см", min: 1, max: 30, default: 4, step: 1 }
+    ],
+    targetVariable: { symbol: "V", name: "Объем", unit: "см³" },
+    calculate: (a, b, c) => a * b * c,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const a = Math.floor(Math.random() * 5) + 3;
+      const b = Math.floor(Math.random() * 4) + 2;
+      const c = Math.floor(Math.random() * 4) + 2;
+      const V = a * b * c;
+      return {
+        question: `(ЕНТ • Стереометрия) Измерения прямоугольного параллелепипеда равны $a = ${a}\\text{ см}$, $b = ${b}\\text{ см}$, $c = ${c}\\text{ см}$. Найдите его объем $V$.`,
+        targetSymbol: "V",
+        correctAnswer: V,
+        unit: "см³",
+        steps: [
+          `**Шаг 1:** Объем параллелепипеда равен произведению его трех измерений: $V = a b c$.`,
+          `**Шаг 2:** $V = ${a} \\cdot ${b} \\cdot ${c} = ${V}\\text{ см}^3$.`
+        ]
+      };
+    }
+  },
+
+  // --- 20. КЛАССИЧЕСКАЯ ВЕРОЯТНОСТЬ (КЛАССИКАЛЫҚ ЫҚТИМАЛДЫҚ) ---
+  {
+    id: "probability_classic",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Теория вероятностей",
+    title: "Классическое определение вероятности",
+    latex: "P(A) = \\frac{m}{n}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Вероятность события A равна отношению числа благоприятных исходов m к общему числу всех равновозможных исходов n.",
+    variables: [
+      { symbol: "m", name: "Благоприятные исходы m", unit: "", min: 1, max: 20, default: 4, step: 1 },
+      { symbol: "n", name: "Все исходы n", unit: "", min: 2, max: 50, default: 20, step: 1 }
+    ],
+    targetVariable: { symbol: "P(A)", name: "Вероятность", unit: "" },
+    calculate: (m, n) => Math.round((m / n) * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const white = Math.floor(Math.random() * 6) + 4;
+      const black = Math.floor(Math.random() * 6) + 5;
+      const total = white + black;
+      const p = Math.round((white / total) * 100) / 100;
+      return {
+        question: `(ЕНТ • Теория вероятностей) В урне ${white} белых и ${black} черных шаров. Наугад вынимают один шар. Найдите вероятность того, что вынут белый шар (с точностью до сотых).`,
+        targetSymbol: "P(A)",
+        correctAnswer: p,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Общее число шаров $n = ${white} + ${black} = ${total}$, благоприятных $m = ${white}$.`,
+          `**Шаг 2:** Вероятность: $P(A) = \\frac{m}{n} = \\frac{${white}}{${total}} \\approx ${p}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 21. РАЗМЕЩЕНИЯ (ОРНАЛАСТЫРУЛАР A_n^k) ---
+  {
+    id: "combinatorics_permutations",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Комбинаторика",
+    title: "Число размещений (A_n^k)",
+    latex: "A_n^k = \\frac{n!}{(n - k)!}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Число упорядоченных подмножеств из k элементов, составленных из множества n различных элементов.",
+    variables: [
+      { symbol: "n", name: "Всего элементов n", unit: "", min: 2, max: 8, default: 5, step: 1 },
+      { symbol: "k", name: "Выбирается k", unit: "", min: 1, max: 4, default: 2, step: 1 }
+    ],
+    targetVariable: { symbol: "A_n^k", name: "Число размещений", unit: "" },
+    calculate: (n, k) => {
+      let r = 1;
+      for (let i = 0; i < k; i++) r *= (n - i);
+      return r;
+    },
+    visualizationType: "default",
+    taskGenerator: () => {
+      const n = Math.floor(Math.random() * 3) + 5; // 5, 6, 7
+      const k = 2;
+      const ans = n * (n - 1);
+      return {
+        question: `(ЕНТ • Комбинаторика) Вычислите число размещений из ${n} элементов по 2: $$A_{${n}}^2$$`,
+        targetSymbol: "A_n^2",
+        correctAnswer: ans,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула числа размещений: $A_n^k = n(n-1)...(n-k+1)$.`,
+          `**Шаг 2:** $A_{${n}}^2 = ${n} \\cdot (${n} - 1) = ${n} \\cdot ${n - 1} = ${ans}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 22. ФОРМУЛА НЬЮТОНА-ЛЕЙБНИЦА (ИНТЕГРАЛ) ---
+  {
+    id: "newton_leibniz_integral",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Математический анализ",
+    title: "Формула Ньютона-Лейбница (Определенный интеграл)",
+    latex: "\\int_a^b f(x) dx = F(b) - F(a)",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Основная формула интегрального исчисления: определенный интеграл равен разности значений первообразной на верхнем и нижнем пределах.",
+    variables: [
+      { symbol: "a", name: "Нижний предел", unit: "", min: 0, max: 3, default: 0, step: 1 },
+      { symbol: "b", name: "Верхний предел", unit: "", min: 1, max: 6, default: 3, step: 1 }
+    ],
+    targetVariable: { symbol: "I", name: "Значение интеграла", unit: "" },
+    calculate: (a, b) => Math.round((Math.pow(b, 2) - Math.pow(a, 2)) * 10) / 10,
+    visualizationType: "parabola_graph",
+    taskGenerator: () => {
+      const b = Math.floor(Math.random() * 4) + 2;
+      const ans = Math.pow(b, 2);
+      return {
+        question: `(ЕНТ • Интеграл) Вычислите определенный интеграл: $$\\int_0^{${b}} 2x \\, dx$$`,
+        targetSymbol: "I",
+        correctAnswer: ans,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Первообразная функции $f(x) = 2x$ равна $F(x) = x^2$.`,
+          `**Шаг 2:** По формуле Ньютона-Лейбница: $F(${b}) - F(0) = ${b}^2 - 0 = ${ans}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 23. СЛОЖНЫЕ ПРОЦЕНТЫ (КҮРДЕЛІ ПАЙЫЗ) ---
+  {
+    id: "compound_interest",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Текстовые задачи ЕНТ",
+    title: "Формула сложных процентов",
+    latex: "S_n = S_0 \\left(1 + \\frac{p}{100}\\right)^n",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Формула роста капитала, при которой начисленные проценты в каждом периоде присоединяются к основной сумме вклада.",
+    variables: [
+      { symbol: "S_0", name: "Начальная сумма (тыс. ₸)", unit: "", min: 50, max: 1000, default: 200, step: 50 },
+      { symbol: "p", name: "Процентная ставка", unit: "%", min: 5, max: 20, default: 10, step: 1 },
+      { symbol: "n", name: "Срок (лет)", unit: "", min: 1, max: 4, default: 2, step: 1 }
+    ],
+    targetVariable: { symbol: "S_n", name: "Конечная сумма", unit: "тыс. ₸" },
+    calculate: (S0, p, n) => Math.round(S0 * Math.pow(1 + p / 100, n) * 10) / 10,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const S0 = 100;
+      const p = 10;
+      const ans = 121;
+      return {
+        question: `(ЕНТ • Финансовая математика) В банк внесли вклад $100\\text{ тыс. ₸}$ под $10\\%$ годовых с капитализацией (сложный процент). Сколько тысяч тенге будет на счете через 2 года?`,
+        targetSymbol: "S",
+        correctAnswer: ans,
+        unit: "тыс. ₸",
+        steps: [
+          `**Шаг 1:** Формула сложного процента: $S = S_0 (1 + 0.10)^2 = 100 \\cdot 1.1^2$.`,
+          `**Шаг 2:** $100 \\cdot 1.21 = 121\\text{ тыс. ₸}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 24. РАССТОЯНИЕ МЕЖДУ ДВУМЯ ТОЧКАМИ (ЕКІ НҮКТЕ АРАҚАШЫҚТЫҒЫ) ---
+  {
+    id: "distance_between_points",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Координатный метод",
+    title: "Расстояние между двумя точками на плоскости",
+    latex: "d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Формула расстояния между точками A(x₁, y₁) и B(x₂, y₂) на декартовой координатной плоскости (следствие теоремы Пифагора).",
+    variables: [
+      { symbol: "x_1", name: "x₁", unit: "", min: -5, max: 5, default: 1, step: 1 },
+      { symbol: "y_1", name: "y₁", unit: "", min: -5, max: 5, default: 2, step: 1 },
+      { symbol: "x_2", name: "x₂", unit: "", min: -5, max: 5, default: 4, step: 1 },
+      { symbol: "y_2", name: "y₂", unit: "", min: -5, max: 5, default: 6, step: 1 }
+    ],
+    targetVariable: { symbol: "d", name: "Расстояние", unit: "" },
+    calculate: (x1, y1, x2, y2) => Math.round(Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Аналитическая геометрия) Найдите расстояние между точками $A(1, 2)$ и $B(4, 6)$ на координатной плоскости.`,
+        targetSymbol: "d",
+        correctAnswer: 5,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула расстояния: $d = \\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$.`,
+          `**Шаг 2:** $d = \\sqrt{(4 - 1)^2 + (6 - 2)^2} = \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$.`
+        ]
+      };
+    }
+  },
+
+  // --- 25. СИНУС СУММЫ УГЛОВ (БҰРЫШТАР ҚОСЫНДЫСЫНЫҢ СИНУСЫ) ---
+  {
+    id: "trig_sum_angles",
+    subject: "math",
+    topic: "Тригонометрия",
+    subtopic: "Формулы сложения",
+    title: "Синус суммы двух углов",
+    latex: "\\sin(\\alpha + \\beta) = \\sin\\alpha \\cos\\beta + \\cos\\alpha \\sin\\beta",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Формула сложения тригонометрических функций для синуса суммы двух произвольных углов.",
+    variables: [
+      { symbol: "\\alpha", name: "Угол α", unit: "°", min: 0, max: 90, default: 30, step: 15 },
+      { symbol: "\\beta", name: "Угол β", unit: "°", min: 0, max: 90, default: 45, step: 15 }
+    ],
+    targetVariable: { symbol: "\\sin(\\alpha+\\beta)", name: "Значение", unit: "" },
+    calculate: (a, b) => Math.round(Math.sin((a + b) * Math.PI / 180) * 1000) / 1000,
+    visualizationType: "trig_wave",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Тригонометрия) Вычислите точное значение: $$\\sin 15^\\circ \\cos 15^\\circ$$`,
+        targetSymbol: "x",
+        correctAnswer: 0.25,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Используем формулу синуса двойного угла: $\\sin 2\\alpha = 2\\sin\\alpha\\cos\\alpha \\implies \\sin\\alpha\\cos\\alpha = \\frac{1}{2}\\sin 2\\alpha$.`,
+          `**Шаг 2:** $\\sin 15^\\circ \\cos 15^\\circ = \\frac{1}{2} \\sin 30^\\circ = \\frac{1}{2} \\cdot \\frac{1}{2} = 0.25$.`
+        ]
+      };
+    }
+  },
+
+  // --- 26. ЦЕНТРОСТРЕМИТЕЛЬНОЕ УСКОРЕНИЕ (ЦЕНТРГЕ ТАРТҚЫШ ҮДЕУ) ---
+  {
+    id: "centripetal_acceleration",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Кинематика",
+    title: "Центростремительное (нормальное) ускорение",
+    latex: "a_n = \\frac{v^2}{R} = \\omega^2 R",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Ускорение тела при равномерном движении по окружности, направленное к ее центру и характеризующее изменение направления скорости.",
+    variables: [
+      { symbol: "v", name: "Линейная скорость", unit: "м/с", min: 1, max: 100, default: 20, step: 1 },
+      { symbol: "R", name: "Радиус окружности", unit: "м", min: 1, max: 50, default: 10, step: 1 }
+    ],
+    targetVariable: { symbol: "a_n", name: "Ускорение", unit: "м/с²" },
+    calculate: (v, R) => Math.round((Math.pow(v, 2) / R) * 10) / 10,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      const v = 20;
+      const R = 10;
+      const a = (v * v) / R;
+      return {
+        question: `(ЕНТ • Механика) Автомобиль движется по закруглению дороги радиусом $R = ${R}\\text{ м}$ со скоростью $v = ${v}\\text{ м/с}$. Найдите центростремительное ускорение автомобиля.`,
+        targetSymbol: "a_n",
+        correctAnswer: a,
+        unit: "м/с²",
+        steps: [
+          `**Шаг 1:** Формула центростремительного ускорения: $a_n = \\frac{v^2}{R}$.`,
+          `**Шаг 2:** $a_n = \\frac{${v}^2}{${R}} = \\frac{400}{10} = ${a}\\text{ м/с}^2$.`
+        ]
+      };
+    }
+  },
+
+  // --- 27. УГЛОВАЯ СКОРОСТЬ И ЧАСТОТА (БҰРЫШТЫҚ ЖЫЛДАМДЫҚ) ---
+  {
+    id: "angular_velocity",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Кинематика",
+    title: "Угловая скорость и частота вращения",
+    latex: "\\omega = 2\\pi \\nu = \\frac{2\\pi}{T}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Угловая скорость связывает угол поворота за единицу времени с частотой вращения ν и периодом обращения T.",
+    variables: [
+      { symbol: "\\nu", name: "Частота вращения", unit: "Гц", min: 1, max: 50, default: 5, step: 1 }
+    ],
+    targetVariable: { symbol: "\\omega", name: "Угловая скорость", unit: "рад/с" },
+    calculate: (nu) => Math.round(2 * Math.PI * nu * 10) / 10,
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      const nu = 5;
+      const omega = Math.round(2 * 3.14 * nu * 10) / 10;
+      return {
+        question: `(ЕНТ • Вращательное движение) Колесо совершает вращение с частотой $\\nu = ${nu}\\text{ Гц}$. Чему равна угловая скорость вращения $\\omega$ (принять $\\pi \\approx 3.14$)?`,
+        targetSymbol: "\\omega",
+        correctAnswer: omega,
+        unit: "рад/с",
+        steps: [
+          `**Шаг 1:** Формула связи угловой скорости и частоты: $\\omega = 2\\pi \\nu$.`,
+          `**Шаг 2:** $\\omega = 2 \\cdot 3.14 \\cdot ${nu} = ${omega}\\text{ рад/с}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 28. ВНУТРЕННЯЯ ЭНЕРГИЯ ОДНОАТОМНОГО ГАЗА (ІШКІ ЭНЕРГИЯ) ---
+  {
+    id: "internal_energy_gas",
+    subject: "physics",
+    topic: "Термодинамика",
+    subtopic: "Основы МКТ и термодинамики",
+    title: "Внутренняя энергия идеального одноатомного газа",
+    latex: "U = \\frac{3}{2}\\nu R T = \\frac{3}{2} p V",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Внутренняя энергия идеального одноатомного газа прямо пропорциональна его абсолютной температуре и числу молей вещества.",
+    variables: [
+      { symbol: "\\nu", name: "Количество вещества", unit: "моль", min: 1, max: 20, default: 2, step: 1 },
+      { symbol: "T", name: "Температура", unit: "К", min: 100, max: 600, default: 300, step: 10 }
+    ],
+    targetVariable: { symbol: "U", name: "Внутренняя энергия", unit: "Дж" },
+    calculate: (nu, T) => Math.round(1.5 * nu * 8.31 * T),
+    visualizationType: "thermo_cycle",
+    taskGenerator: () => {
+      const p = 100;
+      const V = 2;
+      const U = Math.round(1.5 * p * V);
+      return {
+        question: `(ЕНТ • Термодинамика) Идеальный одноатомный газ занимает объем $V = ${V}\\text{ м}^3$ под давлением $p = ${p}\\text{ кПа}$. Найдите внутреннюю энергию газа $U$ в кДж.`,
+        targetSymbol: "U",
+        correctAnswer: U,
+        unit: "кДж",
+        steps: [
+          `**Шаг 1:** Формула внутренней энергии через давление и объем: $U = \\frac{3}{2} p V$.`,
+          `**Шаг 2:** $U = 1.5 \\cdot ${p} \\cdot ${V} = ${U}\\text{ кДж}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 29. ПЕРВЫЙ ЗАКОН ТЕРМОДИНАМИКИ (ТЕРМОДИНАМИКАНЫҢ I ЗАҢЫ) ---
+  {
+    id: "thermodynamics_first_law",
+    subject: "physics",
+    topic: "Термодинамика",
+    subtopic: "Первый закон термодинамики",
+    title: "Первый закон термодинамики",
+    latex: "Q = \\Delta U + A",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Количество теплоты, переданное системе, идет на изменение ее внутренней энергии и совершение системой работы против внешних сил.",
+    variables: [
+      { symbol: "\\Delta U", name: "Изменение энергии", unit: "Дж", min: 0, max: 2000, default: 600, step: 50 },
+      { symbol: "A", name: "Работа газа", unit: "Дж", min: 0, max: 2000, default: 400, step: 50 }
+    ],
+    targetVariable: { symbol: "Q", name: "Количество теплоты", unit: "Дж" },
+    calculate: (dU, A) => dU + A,
+    visualizationType: "thermo_cycle",
+    taskGenerator: () => {
+      const dU = 500;
+      const A = 300;
+      const Q = dU + A;
+      return {
+        question: `(ЕНТ • Термодинамика) Газу передали количество теплоты. При этом внутренняя энергия газа увеличилась на $\\Delta U = ${dU}\\text{ Дж}$, а газ совершил работу $A = ${A}\\text{ Дж}$. Найдите $Q$.`,
+        targetSymbol: "Q",
+        correctAnswer: Q,
+        unit: "Дж",
+        steps: [
+          `**Шаг 1:** По первому закону термодинамики: $Q = \\Delta U + A$.`,
+          `**Шаг 2:** $Q = ${dU} + ${A} = ${Q}\\text{ Дж}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 30. ТЕПЛОТА ПЛАВЛЕНИЯ (БАЛҚУ ЖӘНЕ КРИСТАЛДАНУ ЖЫЛУЫ) ---
+  {
+    id: "phase_change_heat",
+    subject: "physics",
+    topic: "Термодинамика",
+    subtopic: "Фазовые переходы",
+    title: "Теплота плавления и кристаллизации",
+    latex: "Q = \\lambda m",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Количество теплоты, необходимое для плавления кристаллического вещества при температуре плавления, пропорционально массе вещества.",
+    variables: [
+      { symbol: "\\lambda", name: "Уд. теплота плавления", unit: "кДж/кг", min: 10, max: 400, default: 330, step: 10 },
+      { symbol: "m", name: "Масса", unit: "кг", min: 0.5, max: 20, default: 2, step: 0.5 }
+    ],
+    targetVariable: { symbol: "Q", name: "Теплота плавления", unit: "кДж" },
+    calculate: (lam, m) => Math.round(lam * m),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const m = 3;
+      const lam = 330;
+      const Q = m * lam;
+      return {
+        question: `(ЕНТ • Тепловые явления) Какое количество теплоты в кДж потребуется для плавления льда массой $m = ${m}\\text{ кг}$ при $0^\\circ\\text{C}$ (удельная теплота плавления льда $\\lambda = 330\\text{ кДж/кг}$)?`,
+        targetSymbol: "Q",
+        correctAnswer: Q,
+        unit: "кДж",
+        steps: [
+          `**Шаг 1:** Формула теплоты плавления: $Q = \\lambda m$.`,
+          `**Шаг 2:** $Q = 330 \\cdot ${m} = ${Q}\\text{ кДж}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 31. МАГНИТНЫЙ ПОТОК (МАГНИТ АҒЫНЫ) ---
+  {
+    id: "magnetic_flux",
+    subject: "physics",
+    topic: "Электродинамика",
+    subtopic: "Магнитное поле",
+    title: "Магнитный поток (Теорема о потоке)",
+    latex: "\\Phi = B S \\cos\\alpha",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Магнитный поток через плоскую поверхность контура равен произведению модуля индукции поля на площадь контура и косинус угла между нормалью и полем.",
+    variables: [
+      { symbol: "B", name: "Магнитная индукция", unit: "Тл", min: 0.1, max: 5, default: 0.5, step: 0.1 },
+      { symbol: "S", name: "Площадь рамки", unit: "м²", min: 0.01, max: 2, default: 0.2, step: 0.01 }
+    ],
+    targetVariable: { symbol: "\\Phi", name: "Магнитный поток", unit: "Вб" },
+    calculate: (B, S) => Math.round(B * S * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const B = 2;
+      const S = 0.5;
+      const Phi = B * S;
+      return {
+        question: `(ЕНТ • Магнетизм) Рамка площадью $S = ${S}\\text{ м}^2$ расположена перпендикулярно линиям однородного магнитного поля с индукцией $B = ${B}\\text{ Тл}$ ($\\cos 0^\\circ = 1$). Найдите магнитный поток $\\Phi$.`,
+        targetSymbol: "\\Phi",
+        correctAnswer: Phi,
+        unit: "Вб",
+        steps: [
+          `**Шаг 1:** Формула магнитного потока: $\\Phi = B S \\cos\\alpha$. Так как поле перпендикулярно рамке, $\\alpha = 0^\\circ$, $\\cos 0^\\circ = 1$.`,
+          `**Шаг 2:** $\\Phi = ${B} \\cdot ${S} = ${Phi}\\text{ Вб}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 32. ЭНЕРГИЯ ФОТОНА (ФОТОН ЭНЕРГИЯСЫ) ---
+  {
+    id: "photon_energy",
+    subject: "physics",
+    topic: "Оптика",
+    subtopic: "Квантовая физика",
+    title: "Энергия фотона (Формула Планка)",
+    latex: "E = h \\nu = \\frac{h c}{\\lambda}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Энергия кванта электромагнитного излучения (фотона) прямо пропорциональна частоте света и обратно пропорциональна длине волны.",
+    variables: [
+      { symbol: "\\nu", name: "Частота (×10¹⁴ Гц)", unit: "×10¹⁴ Гц", min: 1, max: 20, default: 6, step: 1 }
+    ],
+    targetVariable: { symbol: "E", name: "Энергия (×10⁻¹⁹ Дж)", unit: "×10⁻¹⁹ Дж" },
+    calculate: (nu) => Math.round(6.63 * nu * 10) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Квантовая физика) Во сколько раз энергия фотона ультрафиолетового излучения больше энергии фотона инфракрасного, если частота УФ излучения в 8 раз больше?`,
+        targetSymbol: "k",
+        correctAnswer: 8,
+        unit: "раз",
+        steps: [
+          `**Шаг 1:** Формула энергии фотона: $E = h\\nu$. Энергия прямо пропорциональна частоте ($E \\sim \\nu$).`,
+          `**Шаг 2:** При $\\nu_2 = 8\\nu_1$, отношение энергий равно $E_2 / E_1 = 8$.`
+        ]
+      };
+    }
+  },
+
+  // --- 33. ЗАКОН РАДИОАКТИВНОГО РАСПАДА (РАДИОАКТИВТІ ЫДЫРАУ) ---
+  {
+    id: "radioactive_decay",
+    subject: "physics",
+    topic: "Оптика",
+    subtopic: "Ядерная физика",
+    title: "Закон радиоактивного распада",
+    latex: "N = N_0 \\cdot 2^{-\\frac{t}{T_{1/2}}}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Закон описывает уменьшение среднего числа нераспавшихся радиоактивных ядер со временем с постоянным периодом полураспада T.",
+    variables: [
+      { symbol: "N_0", name: "Начальное число ядер", unit: "", min: 100, max: 10000, default: 1600, step: 100 },
+      { symbol: "k", name: "Число периодов (t/T)", unit: "", min: 1, max: 6, default: 3, step: 1 }
+    ],
+    targetVariable: { symbol: "N", name: "Остаток ядер", unit: "" },
+    calculate: (N0, k) => Math.round(N0 / Math.pow(2, k)),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const N0 = 1600;
+      const k = 3;
+      const N = N0 / 8;
+      return {
+        question: `(ЕНТ • Ядерная физика) Начальное число радиоактивных ядер $N_0 = ${N0}$. Сколько нераспавшихся ядер останется через время, равное 3 периодам полураспада ($t = 3T$)?`,
+        targetSymbol: "N",
+        correctAnswer: N,
+        unit: "ядер",
+        steps: [
+          `**Шаг 1:** Закон радиоактивного распада: $N = N_0 \\cdot 2^{-t/T} = \\frac{N_0}{2^k}$.`,
+          `**Шаг 2:** При $k = 3$, $N = \\frac{${N0}}{2^3} = \\frac{${N0}}{8} = ${N}$ ядер.`
+        ]
+      };
+    }
+  },
+
+  // --- 34. ВЗАИМОСВЯЗЬ МАССЫ И ЭНЕРГИИ ЭЙНШТЕЙНА (ЭЙНШТЕЙН ФОРМУЛАСЫ) ---
+  {
+    id: "einstein_mass_energy",
+    subject: "physics",
+    topic: "Оптика",
+    subtopic: "Теория относительности",
+    title: "Взаимосвязь массы и энергии Эйнштейна",
+    latex: "E = m c^2",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Фундаментальный закон релятивистской физики: полная энергия покоя тела пропорциональна его массе и квадрату скорости света.",
+    variables: [
+      { symbol: "m", name: "Масса (мг)", unit: "мг", min: 1, max: 50, default: 5, step: 1 }
+    ],
+    targetVariable: { symbol: "E", name: "Энергия (×10¹¹ Дж)", unit: "×10¹¹ Дж" },
+    calculate: (m) => Math.round(m * 9 * 10) / 10,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • СТО) Чему равна энергия покоя частицы массой $m = 2\\text{ кг}$ в системе СИ (скорость света $c = 3 \\cdot 10^8\\text{ м/с}$)? В ответе укажите коэффициент при $10^{16}\\text{ Дж}$.`,
+        targetSymbol: "E",
+        correctAnswer: 18,
+        unit: "×10¹⁶ Дж",
+        steps: [
+          `**Шаг 1:** Формула Эйнштейна: $E = m c^2$.`,
+          `**Шаг 2:** $E = 2 \\cdot (3 \\cdot 10^8)^2 = 2 \\cdot 9 \\cdot 10^{16} = 18 \\cdot 10^{16}\\text{ Дж}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 35. СКОРОСТЬ ВОЛНЫ (ТОЛҚЫННЫҢ ТАРАЛУ ЖЫЛДАМДЫҒЫ) ---
+  {
+    id: "wave_speed",
+    subject: "physics",
+    topic: "Механика",
+    subtopic: "Колебания и волны",
+    title: "Скорость распространения волны",
+    latex: "v = \\lambda \\nu = \\frac{\\lambda}{T}",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Скорость распространения волны равна произведению длины волны на частоту колебаний.",
+    variables: [
+      { symbol: "\\lambda", name: "Длина волны", unit: "м", min: 0.5, max: 20, default: 4, step: 0.5 },
+      { symbol: "\\nu", name: "Частота", unit: "Гц", min: 5, max: 200, default: 50, step: 5 }
+    ],
+    targetVariable: { symbol: "v", name: "Скорость волны", unit: "м/с" },
+    calculate: (lam, nu) => Math.round(lam * nu),
+    visualizationType: "motion_curve",
+    taskGenerator: () => {
+      const lam = 4;
+      const nu = 50;
+      const v = lam * nu;
+      return {
+        question: `(ЕНТ • Механические волны) Волна распространяется с частотой $\\nu = ${nu}\\text{ Гц}$, длина волны составляет $\\lambda = ${lam}\\text{ м}$. Найдите скорость волны $v$.`,
+        targetSymbol: "v",
+        correctAnswer: v,
+        unit: "м/с",
+        steps: [
+          `**Шаг 1:** Формула скорости распространения волны: $v = \\lambda \\nu$.`,
+          `**Шаг 2:** $v = ${lam} \\cdot ${nu} = ${v}\\text{ м/с}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 36. ПЛОЩАДЬ РОМБА ЧЕРЕЗ ДИАГОНАЛИ (РОМБ АУДАНЫ) ---
+  {
+    id: "rhombus_area",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Планиметрия (Площади)",
+    title: "Площадь ромба через диагонали",
+    latex: "S = \\frac{1}{2} d_1 d_2",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Площадь ромба равна половине произведения длин его диагоналей: $S = \\frac{1}{2} d_1 d_2$.",
+    variables: [
+      { symbol: "d_1", name: "Диагональ d₁", unit: "", min: 2, max: 30, default: 8, step: 2 },
+      { symbol: "d_2", name: "Диагональ d₂", unit: "", min: 2, max: 30, default: 6, step: 2 }
+    ],
+    targetVariable: { symbol: "S", name: "Площадь ромба", unit: "" },
+    calculate: (d1, d2) => 0.5 * d1 * d2,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const d1 = 12;
+      const d2 = 10;
+      const S = 0.5 * d1 * d2;
+      return {
+        question: `(ЕНТ • Планиметрия) Диагонали ромба равны $d_1 = ${d1}$ и $d_2 = ${d2}$. Найдите площадь этого ромба $S$.`,
+        targetSymbol: "S",
+        correctAnswer: S,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Площадь ромба через диагонали: $S = \\frac{1}{2} d_1 d_2$.`,
+          `**Шаг 2:** $S = \\frac{1}{2} \\cdot ${d1} \\cdot ${d2} = ${S}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 37. ПЛОЩАДЬ ПАРАЛЛЕЛОГРАММА (ПАРАЛЛЕЛОГРАММ АУДАНЫ) ---
+  {
+    id: "parallelogram_area",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Планиметрия (Площади)",
+    title: "Площадь параллелограмма",
+    latex: "S = a \\cdot h_a = a b \\sin\\alpha",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Площадь параллелограмма равна произведению стороны на опущенную к ней высоту, или произведению двух сторон на синус угла между ними.",
+    variables: [
+      { symbol: "a", name: "Основание a", unit: "", min: 2, max: 30, default: 10, step: 1 },
+      { symbol: "h", name: "Высота h", unit: "", min: 1, max: 20, default: 6, step: 1 }
+    ],
+    targetVariable: { symbol: "S", name: "Площадь", unit: "" },
+    calculate: (a, h) => a * h,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const a = 14;
+      const h = 5;
+      const S = a * h;
+      return {
+        question: `(ЕНТ • Геометрия) Сторона параллелограмма равна $a = ${a}$, а высота, проведенная к ней, равна $h = ${h}$. Найдите площадь параллелограмма $S$.`,
+        targetSymbol: "S",
+        correctAnswer: S,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула площади параллелограмма: $S = a \\cdot h$.`,
+          `**Шаг 2:** $S = ${a} \\cdot ${h} = ${S}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 38. ПЛОЩАДЬ РАВНОСТОРОННЕГО ТРЕУГОЛЬНИКА (ДҰРЫС ҮШБҰРЫШ АУДАНЫ) ---
+  {
+    id: "equilateral_triangle_area",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Планиметрия (Площади)",
+    title: "Площадь и высота равностороннего треугольника",
+    latex: "S = \\frac{a^2\\sqrt{3}}{4}, \\quad h = \\frac{a\\sqrt{3}}{2}",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Для правильного (равностороннего) треугольника со стороной a площадь и высота вычисляются по базовым формулам ЕНТ.",
+    variables: [
+      { symbol: "a", name: "Сторона a", unit: "", min: 2, max: 20, default: 6, step: 2 }
+    ],
+    targetVariable: { symbol: "S", name: "Площадь", unit: "" },
+    calculate: (a) => Math.round((Math.pow(a, 2) * Math.sqrt(3) / 4) * 100) / 100,
+    visualizationType: "pythagoras",
+    taskGenerator: () => {
+      const a = 4;
+      const k = (a * a) / 4;
+      return {
+        question: `(ЕНТ • Планиметрия) Сторона правильного треугольника равна $a = ${a}$. Найдите его площадь в виде $k\\sqrt{3}$. Укажите коэффициент $k$.`,
+        targetSymbol: "k",
+        correctAnswer: k,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула площади правильного треугольника: $S = \\frac{a^2\\sqrt{3}}{4}$.`,
+          `**Шаг 2:** $S = \\frac{${a}^2\\sqrt{3}}{4} = \\frac{16\\sqrt{3}}{4} = ${k}\\sqrt{3}$. Значит, $k = ${k}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 39. ОБЪЕМ ПИРАМИДЫ (ПИРАМИДА КӨЛЕМІ) ---
+  {
+    id: "pyramid_volume",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Стереометрия",
+    title: "Объем пирамиды",
+    latex: "V = \\frac{1}{3} S_{\\text{осн}} H",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Объем любой пирамиды равен одной трети произведения площади ее основания на высоту.",
+    variables: [
+      { symbol: "S", name: "Площадь основания", unit: "", min: 3, max: 150, default: 36, step: 3 },
+      { symbol: "H", name: "Высота пирамиды", unit: "", min: 1, max: 30, default: 9, step: 1 }
+    ],
+    targetVariable: { symbol: "V", name: "Объем пирамиды", unit: "" },
+    calculate: (S, H) => Math.round((S * H / 3) * 10) / 10,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const S = 30;
+      const H = 6;
+      const V = (S * H) / 3;
+      return {
+        question: `(ЕНТ • Стереометрия) Площадь основания пирамиды равна $S_{\\text{осн}} = ${S}$, а высота пирамиды $H = ${H}$. Найдите объем пирамиды $V$.`,
+        targetSymbol: "V",
+        correctAnswer: V,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула объема пирамиды: $V = \\frac{1}{3} S_{\\text{осн}} H$.`,
+          `**Шаг 2:** $V = \\frac{1}{3} \\cdot ${S} \\cdot ${H} = ${V}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 40. СКАЛЯРНОЕ ПРОИЗВЕДЕНИЕ ВЕКТОРОВ (ВЕКТОРЛАРДЫҢ СКАЛЯР КӨБЕЙТІНДІСІ) ---
+  {
+    id: "vector_dot_product",
+    subject: "math",
+    topic: "Геометрия",
+    subtopic: "Векторы",
+    title: "Скалярное произведение векторов на плоскости",
+    latex: "\\vec{a} \\cdot \\vec{b} = x_1 x_2 + y_1 y_2 = |\\vec{a}||\\vec{b}|\\cos\\varphi",
+    examTags: ["ЕНТ", "ҰБТ"],
+    description: "Скалярное произведение двух векторов равно сумме произведений их соответствующих координат.",
+    variables: [
+      { symbol: "x_1", name: "x₁", unit: "", min: -5, max: 5, default: 3, step: 1 },
+      { symbol: "y_1", name: "y₁", unit: "", min: -5, max: 5, default: 4, step: 1 },
+      { symbol: "x_2", name: "x₂", unit: "", min: -5, max: 5, default: 2, step: 1 },
+      { symbol: "y_2", name: "y₂", unit: "", min: -5, max: 5, default: -1, step: 1 }
+    ],
+    targetVariable: { symbol: "\\vec{a}\\cdot\\vec{b}", name: "Скалярное произведение", unit: "" },
+    calculate: (x1, y1, x2, y2) => (x1 * x2) + (y1 * y2),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const x1 = 3, y1 = 4, x2 = 2, y2 = -1;
+      const res = (x1 * x2) + (y1 * y2);
+      return {
+        question: `(ЕНТ • Векторы) Даны векторы $\\vec{a}(3; 4)$ и $\\vec{b}(2; -1)$. Найдите их скалярное произведение $\\vec{a} \\cdot \\vec{b}$.`,
+        targetSymbol: "res",
+        correctAnswer: res,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула скалярного произведения в координатах: $\\vec{a}\\cdot\\vec{b} = x_1 x_2 + y_1 y_2$.`,
+          `**Шаг 2:** $\\vec{a}\\cdot\\vec{b} = 3 \\cdot 2 + 4 \\cdot (-1) = 6 - 4 = ${res}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 41. СУММА ЧЛЕНОВ АРИФМЕТИЧЕСКОЙ ПРОГРЕССИИ (АРИФМЕТИКАЛЫҚ ПРОГРЕССИЯ ҚОСЫНДЫСЫ) ---
+  {
+    id: "sum_arithmetic_progression",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Числовые последовательности",
+    title: "Сумма первых n членов арифметической прогрессии",
+    latex: "S_n = \\frac{2a_1 + (n - 1)d}{2} \\cdot n = \\frac{a_1 + a_n}{2} \\cdot n",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Формула для нахождения суммы первых n членов арифметической прогрессии по ее первому члену a₁ и разности d.",
+    variables: [
+      { symbol: "a_1", name: "Первый член a₁", unit: "", min: -10, max: 50, default: 3, step: 1 },
+      { symbol: "d", name: "Разность d", unit: "", min: 1, max: 10, default: 2, step: 1 },
+      { symbol: "n", name: "Число членов n", unit: "", min: 2, max: 30, default: 10, step: 1 }
+    ],
+    targetVariable: { symbol: "S_n", name: "Сумма прогрессии", unit: "" },
+    calculate: (a1, d, n) => ((2 * a1 + (n - 1) * d) / 2) * n,
+    visualizationType: "default",
+    taskGenerator: () => {
+      const a1 = 2;
+      const d = 3;
+      const n = 10;
+      const S = ((2 * a1 + (n - 1) * d) / 2) * n;
+      return {
+        question: `(ЕНТ • Прогрессии) В арифметической прогрессии $a_1 = ${a1}$, разность $d = ${d}$. Найдите сумму первых 10 членов $S_{10}$.`,
+        targetSymbol: "S_10",
+        correctAnswer: S,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула суммы: $S_n = \\frac{2a_1 + (n - 1)d}{2} \\cdot n$.`,
+          `**Шаг 2:** $S_{10} = \\frac{2 \\cdot 2 + 9 \\cdot 3}{2} \\cdot 10 = \\frac{4 + 27}{2} \\cdot 10 = 31 \\cdot 5 = ${S}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 42. СУММА ЧЛЕНОВ ГЕОМЕТРИЧЕСКОЙ ПРОГРЕССИИ (ГЕОМЕТРИЯЛЫҚ ПРОГРЕССИЯ ҚОСЫНДЫСЫ) ---
+  {
+    id: "sum_geometric_progression",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Числовые последовательности",
+    title: "Сумма первых n членов геометрической прогрессии",
+    latex: "S_n = \\frac{b_1 (q^n - 1)}{q - 1}",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Формула суммы конечного числа членов геометрической прогрессии со знаменателем q ≠ 1.",
+    variables: [
+      { symbol: "b_1", name: "Первый член b₁", unit: "", min: 1, max: 20, default: 2, step: 1 },
+      { symbol: "q", name: "Знаменатель q", unit: "", min: 2, max: 5, default: 2, step: 1 },
+      { symbol: "n", name: "Число членов n", unit: "", min: 2, max: 8, default: 5, step: 1 }
+    ],
+    targetVariable: { symbol: "S_n", name: "Сумма прогрессии", unit: "" },
+    calculate: (b1, q, n) => Math.round(b1 * (Math.pow(q, n) - 1) / (q - 1)),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const b1 = 3;
+      const q = 2;
+      const n = 4;
+      const S = b1 * (Math.pow(q, n) - 1) / (q - 1);
+      return {
+        question: `(ЕНТ • Прогрессии) Найдите сумму первых 4 членов геометрической прогрессии ($S_4$), если $b_1 = ${b1}$, $q = ${q}$.`,
+        targetSymbol: "S_4",
+        correctAnswer: S,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Формула суммы геометрической прогрессии: $S_n = \\frac{b_1(q^n - 1)}{q - 1}$.`,
+          `**Шаг 2:** $S_4 = \\frac{3 \\cdot (2^4 - 1)}{2 - 1} = \\frac{3 \\cdot (16 - 1)}{1} = 3 \\cdot 15 = ${S}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 43. ПЕРЕХОД К НОВОМУ ОСНОВАНИЮ ЛОГАРИФМА (ЛОГАРИФМ НЕГІЗІН АУЫСТЫРУ) ---
+  {
+    id: "logarithm_base_change",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Логарифмические уравнения",
+    title: "Формула перехода к новому основанию логарифма",
+    latex: "\\log_a b = \\frac{\\log_c b}{\\log_c a} = \\frac{1}{\\log_b a}",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Позволяет перейти от одного основания логарифма к любому другому удобному основанию c (например, к десятичному или натуральному).",
+    variables: [
+      { symbol: "a", name: "Основание a", unit: "", min: 2, max: 10, default: 4, step: 1 },
+      { symbol: "b", name: "Аргумент b", unit: "", min: 2, max: 100, default: 16, step: 1 }
+    ],
+    targetVariable: { symbol: "\\log_a b", name: "Значение", unit: "" },
+    calculate: (a, b) => Math.round((Math.log(b) / Math.log(a)) * 100) / 100,
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Логарифмы) Вычислите значение выражения: $\\log_4 16 + \\log_3 27$.`,
+        targetSymbol: "x",
+        correctAnswer: 5,
+        unit: "",
+        steps: [
+          `**Шаг 1:** $\\log_4 16 = \\log_4 (4^2) = 2$.`,
+          `**Шаг 2:** $\\log_3 27 = \\log_3 (3^3) = 3$.`,
+          `**Шаг 3:** Итого: $2 + 3 = 5$.`
+        ]
+      };
+    }
+  },
+
+  // --- 44. ПРОИЗВОДНАЯ СТЕПЕННОЙ ФУНКЦИИ (ДӘРЕЖЕЛІК ФУНКЦИЯ ТУЫНДЫСЫ) ---
+  {
+    id: "derivative_power_rule",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Дифференциальное исчисление",
+    title: "Производная степенной функции",
+    latex: "(x^n)' = n x^{n - 1}, \\quad (c \\cdot x^n)' = c \\cdot n x^{n - 1}",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Основное правило дифференцирования степенной функции для решения задач на экстремумы, касательные и скорость изменения величин на ЕНТ.",
+    variables: [
+      { symbol: "c", name: "Коэффициент c", unit: "", min: 1, max: 10, default: 3, step: 1 },
+      { symbol: "n", name: "Показатель степени n", unit: "", min: 1, max: 5, default: 3, step: 1 },
+      { symbol: "x", name: "Точка x", unit: "", min: 1, max: 5, default: 2, step: 1 }
+    ],
+    targetVariable: { symbol: "f'(x)", name: "Значение производной", unit: "" },
+    calculate: (c, n, x) => c * n * Math.pow(x, n - 1),
+    visualizationType: "default",
+    taskGenerator: () => {
+      const c = 4;
+      const n = 3;
+      const x = 2;
+      const ans = c * n * Math.pow(x, n - 1);
+      return {
+        question: `(ЕНТ • Производная) Дана функция $f(x) = ${c}x^{${n}}$. Найдите значение ее производной в точке $x_0 = ${x}$.`,
+        targetSymbol: "f'(x_0)",
+        correctAnswer: ans,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Находим формулу производной: $f'(x) = (${c}x^3)' = ${c} \\cdot 3x^2 = 12x^2$.`,
+          `**Шаг 2:** Подставляем точку $x_0 = ${x}$: $f'(${x}) = 12 \\cdot (${x})^2 = 12 \\cdot 4 = ${ans}$.`
+        ]
+      };
+    }
+  },
+
+  // --- 45. СУММА И РАЗНОСТЬ КУБОВ (КУБТАРДЫҢ ҚОСЫНДЫСЫ МЕН АЙЫРЫМЫ) ---
+  {
+    id: "cubes_sum_difference",
+    subject: "math",
+    topic: "Алгебра",
+    subtopic: "Формулы сокращенного умножения",
+    title: "Разность и сумма кубов (ЕНТ Рустюмов)",
+    latex: "a^3 - b^3 = (a - b)(a^2 + ab + b^2), \\quad a^3 + b^3 = (a + b)(a^2 - ab + b^2)",
+    examTags: ["ЕНТ", "ҰБТ", "Рустюмов"],
+    description: "Формулы разложения на множители разности и суммы кубов двух выражений — один из самых частых приемов сокращения дробей на ЕНТ.",
+    variables: [
+      { symbol: "a", name: "Число a", unit: "", min: 1, max: 10, default: 4, step: 1 },
+      { symbol: "b", name: "Число b", unit: "", min: 1, max: 10, default: 1, step: 1 }
+    ],
+    targetVariable: { symbol: "a^3 - b^3", name: "Значение разности кубов", unit: "" },
+    calculate: (a, b) => Math.pow(a, 3) - Math.pow(b, 3),
+    visualizationType: "default",
+    taskGenerator: () => {
+      return {
+        question: `(ЕНТ • Алгебра) Сократите дробь и найдите ее значение при $x = 10$: $$\\frac{x^3 - 8}{x - 2}$$`,
+        targetSymbol: "val",
+        correctAnswer: 124,
+        unit: "",
+        steps: [
+          `**Шаг 1:** Разложим числитель по формуле разности кубов: $x^3 - 2^3 = (x - 2)(x^2 + 2x + 4)$.`,
+          `**Шаг 2:** Сокращаем на $(x - 2)$: получаем $x^2 + 2x + 4$.`,
+          `**Шаг 3:** При $x = 10$: $10^2 + 2 \\cdot 10 + 4 = 100 + 20 + 4 = 124$.`
+        ]
+      };
+    }
   }
 ];
+

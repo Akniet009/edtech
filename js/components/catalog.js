@@ -54,27 +54,88 @@ export class Catalog {
     this.searchQuery = '';
     const searchInput = document.getElementById('search-input');
     if (searchInput) searchInput.value = '';
+    const clearBtn = document.getElementById('search-clear-btn');
+    if (clearBtn) clearBtn.style.display = 'none';
+
     this.syncFilterUI();
     this.render();
   }
 
+  static updateSearchMetaUI() {
+    const metaTextEl = document.getElementById('search-count-text');
+    const resetBtn = document.getElementById('btn-quick-reset-filters');
+    const clearBtn = document.getElementById('search-clear-btn');
+    const searchInput = document.getElementById('search-input');
+
+    if (clearBtn && searchInput) {
+      clearBtn.style.display = searchInput.value.trim().length > 0 ? 'flex' : 'none';
+    }
+
+    if (!metaTextEl) return;
+
+    const filtered = this.getFilteredFormulas();
+    const count = filtered.length;
+    const total = FORMULAS_DATA.length;
+    const isKz = I18n.getLanguage() === 'kz';
+
+    const hasFilters = Boolean(this.searchQuery) || this.currentSubject !== 'all' || this.activeTopic !== 'all';
+
+    if (resetBtn) {
+      resetBtn.style.display = hasFilters ? 'inline-flex' : 'none';
+    }
+
+    if (!hasFilters) {
+      metaTextEl.textContent = isKz
+        ? `Барлық ${total} формула қолжетімді`
+        : `Доступно всех ${total} формул`;
+    } else {
+      if (count === 0) {
+        metaTextEl.textContent = isKz
+          ? `Сәйкес формула табылмады (0 / ${total})`
+          : `Формулы не найдены (0 из ${total})`;
+      } else {
+        metaTextEl.textContent = isKz
+          ? `${total} формуланың ${count}-і табылды`
+          : `Найдено ${count} из ${total} формул`;
+      }
+    }
+  }
+
   static syncFilterUI() {
-    // 1. Sync Subject Tabs (.subject-tab)
+    // 1. Sync Subject Tabs (.subject-tab) and dynamic count badges
+    const totalCount = FORMULAS_DATA.length;
+    const physCount = FORMULAS_DATA.filter(f => f.subject === 'physics').length;
+    const mathCount = FORMULAS_DATA.filter(f => f.subject === 'math').length;
+
+    const tabAllCount = document.querySelector('.subject-tab[data-subject="all"] .tab-count');
+    if (tabAllCount) tabAllCount.textContent = totalCount;
+    const tabPhysCount = document.querySelector('.subject-tab[data-subject="physics"] .tab-count');
+    if (tabPhysCount) tabPhysCount.textContent = physCount;
+    const tabMathCount = document.querySelector('.subject-tab[data-subject="math"] .tab-count');
+    if (tabMathCount) tabMathCount.textContent = mathCount;
+
     document.querySelectorAll('.subject-tab').forEach(tab => {
       const sub = tab.getAttribute('data-subject');
       tab.classList.toggle('active', sub === this.currentSubject);
     });
 
-    // 2. Sync Topic Pills (.topic-pill)
-    const allCount = this.currentSubject === 'physics' ? '17' : (this.currentSubject === 'math' ? '23' : '40');
+    // 2. Sync Topic Pills (.topic-pill) and dynamic counts
+    const currentSubjectCount = this.currentSubject === 'physics' ? physCount : (this.currentSubject === 'math' ? mathCount : totalCount);
     const allPillCount = document.querySelector('.topic-pill[data-topic="all"] .pill-count');
     if (allPillCount) {
-      allPillCount.textContent = allCount;
+      allPillCount.textContent = currentSubjectCount;
     }
 
     document.querySelectorAll('.topic-pill').forEach(pill => {
       const pillTopic = pill.getAttribute('data-topic');
       const pillSub = pill.getAttribute('data-subject');
+
+      // Update pill count dynamically
+      if (pillTopic !== 'all') {
+        const count = FORMULAS_DATA.filter(f => f.topic === pillTopic).length;
+        const countSpan = pill.querySelector('.pill-count');
+        if (countSpan) countSpan.textContent = count;
+      }
 
       // Visibility based on selected subject
       if (pillTopic === 'all' || this.currentSubject === 'all') {
@@ -119,6 +180,8 @@ export class Catalog {
 
   static render() {
     if (!this.containerEl) return;
+
+    this.updateSearchMetaUI();
 
     const filtered = this.getFilteredFormulas();
 

@@ -67,10 +67,14 @@ export class MistakesBank {
   static updateHeaderBadge() {
     const badgeEl = document.getElementById('stat-mistakes-count');
     const itemEl = document.getElementById('btn-open-mistakes');
+    const menuDotEl = document.getElementById('menu-badge-dot');
     const count = this.getCount();
 
     if (badgeEl) {
       badgeEl.textContent = count;
+    }
+    if (menuDotEl) {
+      menuDotEl.style.display = count > 0 ? 'inline-block' : 'none';
     }
     if (itemEl) {
       if (count > 0) {

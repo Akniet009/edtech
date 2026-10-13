@@ -29,64 +29,154 @@
 
   <!-- Minimalist Header -->
   <header class="app-header">
-    <div class="brand">
+    <a href="#" class="brand" aria-label="FormuLab">
       <div class="brand-logo"><i class="fa-solid fa-shapes"></i></div>
       <span class="brand-title">FormuLab</span>
-    </div>
+    </a>
 
-    <!-- User Stats, Language Switcher & Controls -->
-    <div class="user-stats-bar">
-      <div class="stat-item" data-i18n-title="streakTitle" title="Үздіксіз дұрыс жауаптар сериясы">
-        <i class="fa-solid fa-fire stat-icon-streak"></i>
-        <span><span data-i18n="statStreak">Үздіксіз:</span> <strong id="stat-streak">0</strong></span>
-      </div>
-      <div class="stat-item" data-i18n-title="solvedTitle" title="Жалпы шешілген есептер саны">
-        <i class="fa-solid fa-check stat-icon-solved"></i>
-        <span><span data-i18n="statSolved">Шешілді:</span> <strong id="stat-solved">0</strong></span>
-      </div>
-      <div class="stat-item" data-i18n-title="accuracyTitle" title="Дұрыс жауап беру дәлдігі">
-        <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
-        <span><span data-i18n="statAccuracy">Дәлдік:</span> <strong id="stat-accuracy">100%</strong></span>
-      </div>
-
-      <!-- Mistakes Bank Button -->
-      <div class="stat-item stat-item-mistakes" id="btn-open-mistakes" data-i18n-title="mistakesTitle" title="Қателермен жұмыс банкі" role="button" tabindex="0" onclick="window.openMistakesBank && window.openMistakesBank()">
-        <i class="fa-solid fa-triangle-exclamation stat-icon-mistakes"></i>
-        <span><span data-i18n="statMistakes">Қателер:</span> <strong id="stat-mistakes-count">0</strong></span>
-      </div>
-
-      <!-- User Gamification Level & XP Badge -->
-      <div class="stat-item stat-item-xp" id="btn-open-achievements" data-i18n-title="achievementsTitle" title="Жетістіктер мен деңгейлерді көру" role="button" tabindex="0" onclick="window.openAchievements && window.openAchievements()">
-        <span class="level-badge" id="user-level-badge">LVL 1</span>
-        <div class="xp-progress-bar-container">
-          <div class="xp-text"><span id="user-xp">0</span> / <span id="user-next-xp">100</span> XP</div>
-          <div class="xp-bar-track">
-            <div class="xp-bar-fill" id="user-xp-bar" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bilingual Language Switcher -->
-      <div class="lang-switch-group" role="group" aria-label="Language Switcher">
-        <button id="lang-btn-kz" class="btn-lang active" data-lang="kz" title="Қазақ тілі">KZ</button>
-        <button id="lang-btn-ru" class="btn-lang" data-lang="ru" title="Русский язык">RU</button>
-      </div>
-
-      <!-- Cheat-sheet (A4 Printable) Button -->
-      <button id="btn-open-cheat-sheet" class="btn btn-outline btn-cheat-sheet" data-i18n-title="cheatSheetTitle" title="Формулалар шпаргалкасы (A4 баспаға дайын)" onclick="window.openCheatSheet && window.openCheatSheet()">
-        <i class="fa-solid fa-file-pdf"></i>
-        <span data-i18n="cheatSheetBtn">Шпаргалка</span>
-      </button>
-
-      <!-- ҰБТ Exam Mode Button -->
-      <button id="btn-open-exam" class="btn btn-exam-mode" onclick="window.startUNTExam && window.startUNTExam()">
-        <i class="fa-solid fa-graduation-cap"></i>
-        <span data-i18n="examModeBtn">ҰБТ Тест</span>
-      </button>
-
-      <button id="btn-theme-toggle" class="btn-icon" data-i18n-title="themeToggleTitle" title="Тақырыпты ауыстыру">
+    <!-- Header Controls & Unified Menu -->
+    <div class="header-controls">
+      <!-- Quick Theme Toggle -->
+      <button id="btn-theme-toggle" class="btn-icon btn-theme-toggle" data-i18n-title="themeToggleTitle" title="Тақырыпты ауыстыру">
         <i class="fa-solid fa-moon"></i>
       </button>
+
+      <!-- Main Unified Menu Toggle -->
+      <div class="header-menu-container">
+        <button id="btn-menu-toggle" class="btn-menu-toggle" aria-expanded="false" aria-haspopup="true" data-i18n-title="menuTitle" title="Мәзір">
+          <i class="fa-solid fa-bars menu-toggle-icon"></i>
+          <span class="menu-toggle-label" data-i18n="menuBtn">Мәзір</span>
+          <span id="menu-badge-dot" class="menu-badge-dot" style="display: none;"></span>
+        </button>
+
+        <!-- Dropdown Menu Panel -->
+        <div id="header-dropdown-menu" class="header-dropdown-menu glass-panel" role="menu" aria-hidden="true">
+          
+          <!-- Section 1: Player Profile & Gamification XP -->
+          <div class="menu-section menu-section-profile">
+            <div class="menu-section-header">
+              <span class="menu-section-title" data-i18n="menuProfileSection">Оқушы дәрежесі & XP</span>
+            </div>
+            <div class="menu-profile-card stat-item-xp" id="btn-open-achievements" role="button" tabindex="0" data-i18n-title="achievementsTitle" title="Жетістіктер мен деңгейлерді көру" onclick="window.openAchievements && window.openAchievements()">
+              <div class="menu-profile-top">
+                <span class="level-badge" id="user-level-badge">LVL 1</span>
+                <div class="menu-xp-details">
+                  <div class="xp-text"><span id="user-xp">0</span> / <span id="user-next-xp">100</span> XP</div>
+                  <div class="xp-bar-track">
+                    <div class="xp-bar-fill" id="user-xp-bar" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="menu-profile-link">
+                <i class="fa-solid fa-trophy"></i>
+                <span data-i18n="achievementsSub">Жетістіктер мен дәрежелерді көру</span>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: User Stats & Mistakes Bank -->
+          <div class="menu-section menu-section-stats">
+            <div class="menu-section-header">
+              <span class="menu-section-title" data-i18n="menuStatsSection">Нәтижелер мен статистика</span>
+            </div>
+            <div class="menu-stats-grid">
+              <div class="menu-stat-tile" data-i18n-title="streakTitle" title="Үздіксіз дұрыс жауаптар сериясы">
+                <div class="menu-stat-icon-wrap streak-wrap">
+                  <i class="fa-solid fa-fire stat-icon-streak"></i>
+                </div>
+                <div class="menu-stat-content">
+                  <span class="menu-stat-num" id="stat-streak">0</span>
+                  <span class="menu-stat-label" data-i18n="statStreak">Үздіксіз</span>
+                </div>
+              </div>
+              <div class="menu-stat-tile" data-i18n-title="solvedTitle" title="Жалпы шешілген есептер саны">
+                <div class="menu-stat-icon-wrap solved-wrap">
+                  <i class="fa-solid fa-check stat-icon-solved"></i>
+                </div>
+                <div class="menu-stat-content">
+                  <span class="menu-stat-num" id="stat-solved">0</span>
+                  <span class="menu-stat-label" data-i18n="statSolved">Шешілді</span>
+                </div>
+              </div>
+              <div class="menu-stat-tile" data-i18n-title="accuracyTitle" title="Дұрыс жауап беру дәлдігі">
+                <div class="menu-stat-icon-wrap accuracy-wrap">
+                  <i class="fa-solid fa-bullseye stat-icon-accuracy"></i>
+                </div>
+                <div class="menu-stat-content">
+                  <span class="menu-stat-num" id="stat-accuracy">100%</span>
+                  <span class="menu-stat-label" data-i18n="statAccuracy">Дәлдік</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mistakes Bank Action Item -->
+            <div class="menu-mistakes-tile stat-item-mistakes" id="btn-open-mistakes" data-i18n-title="mistakesTitle" title="Қателермен жұмыс банкі" role="button" tabindex="0" onclick="window.openMistakesBank && window.openMistakesBank()">
+              <div class="menu-mistakes-left">
+                <div class="menu-stat-icon-wrap mistakes-wrap">
+                  <i class="fa-solid fa-triangle-exclamation stat-icon-mistakes"></i>
+                </div>
+                <div class="menu-mistakes-text">
+                  <div class="menu-mistakes-heading">
+                    <span data-i18n="statMistakes">Қателер:</span>
+                    <strong class="menu-mistakes-count" id="stat-mistakes-count">0</strong>
+                  </div>
+                  <span class="menu-mistakes-sub" data-i18n="menuMistakesDesc">Қате жіберілген есептермен жұмыс</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </div>
+          </div>
+
+          <!-- Section 3: Tools & Exam -->
+          <div class="menu-section menu-section-tools">
+            <div class="menu-section-header">
+              <span class="menu-section-title" data-i18n="menuToolsSection">Құралдар мен сынақтар</span>
+            </div>
+            <div class="menu-actions-stack">
+              <button id="btn-open-exam" class="menu-action-btn btn-exam-mode" onclick="window.startUNTExam && window.startUNTExam()">
+                <div class="menu-action-icon exam-icon-wrap">
+                  <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="menu-action-details">
+                  <span class="menu-action-title" data-i18n="examModeBtn">ҰБТ Тест</span>
+                  <span class="menu-action-sub" data-i18n="examModeSub">10–20 сұрақ арқылы білім сынағы</span>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+              </button>
+
+              <button id="btn-open-cheat-sheet" class="menu-action-btn btn-cheat-sheet" data-i18n-title="cheatSheetTitle" title="Формулалар шпаргалкасы (A4 баспаға дайын)" onclick="window.openCheatSheet && window.openCheatSheet()">
+                <div class="menu-action-icon cheat-icon-wrap">
+                  <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="menu-action-details">
+                  <span class="menu-action-title" data-i18n="cheatSheetBtn">Шпаргалка</span>
+                  <span class="menu-action-sub" data-i18n="cheatSheetSub">Баспаға дайын формулалар парағы</span>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 4: Settings & Language -->
+          <div class="menu-section menu-section-settings">
+            <div class="menu-section-header">
+              <span class="menu-section-title" data-i18n="menuSettingsSection">Баптаулар</span>
+            </div>
+            <div class="menu-settings-row">
+              <div class="menu-settings-label">
+                <i class="fa-solid fa-language"></i>
+                <span data-i18n="menuLangLabel">Интерфейс тілі</span>
+              </div>
+              <div class="lang-switch-group" role="group" aria-label="Language Switcher">
+                <button id="lang-btn-kz" class="btn-lang active" data-lang="kz" title="Қазақ тілі">KZ</button>
+                <button id="lang-btn-ru" class="btn-lang" data-lang="ru" title="Русский язык">RU</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   </header>
 
@@ -101,40 +191,43 @@
         Физика мен математика пәндері бойынша негізгі формулалар жинағы (ҰБТ • ЕНТ Рустюмов бойынша). Слайдерлерді жылжытып, графикті бақылаңыз және 1 кликпен есептер генераторында біліміңізді бекітіңіз.
       </p>
 
-      <!-- Exam Quick Start Banner -->
-      <div class="exam-banner glass-panel">
-        <div class="exam-banner-left">
-          <div class="exam-banner-icon"><i class="fa-solid fa-stopwatch-20"></i></div>
-          <div class="exam-banner-info">
-            <h3 class="exam-banner-title" data-i18n="examBannerTitle">ҰБТ Экспресс-Тест</h3>
-            <p class="exam-banner-desc" data-i18n="examBannerSubtitle">Физика мен математикадан 10–20 сұрақ арқылы біліміңізді тексеріп, нәтижеңізді анықтаңыз.</p>
-          </div>
-        </div>
-        <div class="exam-banner-actions">
-          <button id="btn-hero-exam" class="btn btn-primary btn-start-exam" onclick="window.startUNTExam && window.startUNTExam()">
-            <i class="fa-solid fa-play"></i> <span data-i18n="examStartBtn">Тестті бастау</span>
-          </button>
-          <button id="btn-hero-cheat-sheet" class="btn btn-outline btn-hero-cheat-sheet" data-i18n-title="cheatSheetTitle" title="Формулалар шпаргалкасы (A4 баспаға дайын)" onclick="window.openCheatSheet && window.openCheatSheet()">
-            <i class="fa-solid fa-file-lines"></i> <span data-i18n="cheatSheetHeroBtn">A4 Шпаргалка</span>
-          </button>
-          <button id="btn-exam-settings" class="btn btn-outline btn-exam-config" data-i18n-title="examConfigTitle" title="Тест баптаулары" onclick="window.openUNTExamSetup && window.openUNTExamSetup()">
-            <i class="fa-solid fa-sliders"></i>
-          </button>
-        </div>
-      </div>
 
       <!-- Controls & Filter Bar -->
       <div class="controls-bar">
-        <!-- Search Box -->
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input
-            type="text"
-            id="search-input"
-            class="search-input"
-            data-i18n-placeholder="searchPlaceholder"
-            placeholder="Формула бойынша іздеу (мысалы: Ньютон, Пифагор, Ом заңы, прогрессия, cos)..."
-          />
+        <!-- Search Box with Clear Button & Shortcut Badge -->
+        <div class="search-box-wrapper">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input
+              type="text"
+              id="search-input"
+              class="search-input"
+              data-i18n-placeholder="searchPlaceholder"
+              placeholder="Формула бойынша іздеу (мысалы: Ньютон, Пифагор, Ом заңы, прогрессия, cos)..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <div class="search-actions-right">
+              <button id="search-clear-btn" class="search-clear-btn" aria-label="Іздеуді тазарту" title="Іздеуді тазарту (Esc)" style="display: none;">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <div class="search-shortcut-badge" id="search-shortcut-badge" title="Іздеу пернесі: Ctrl + K немесе /">
+                <kbd>Ctrl</kbd> <kbd>K</kbd>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Search Results Counter & Reset Filter -->
+          <div class="search-meta-bar" id="search-meta-bar">
+            <div class="search-count-wrapper">
+              <i class="fa-solid fa-filter-circle-check search-count-icon"></i>
+              <span id="search-count-text" class="search-count-text">Барлық 85 формула қолжетімді</span>
+            </div>
+            <button id="btn-quick-reset-filters" class="btn-quick-reset" style="display: none;">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span data-i18n="resetFilters">Сүзгілерді қалпына келтіру</span>
+            </button>
+          </div>
         </div>
 
         <!-- Subject Navigation Tabs -->
@@ -142,17 +235,17 @@
           <button class="subject-tab active" data-subject="all">
             <i class="fa-solid fa-layer-group"></i>
             <span data-i18n="subjectAll">Барлық пәндер</span>
-            <span class="tab-count">40</span>
+            <span class="tab-count">85</span>
           </button>
           <button class="subject-tab" data-subject="physics">
             <i class="fa-solid fa-bolt"></i>
             <span data-i18n="subjectPhysics">Физика</span>
-            <span class="tab-count">17</span>
+            <span class="tab-count">42</span>
           </button>
           <button class="subject-tab" data-subject="math">
             <i class="fa-solid fa-calculator"></i>
             <span data-i18n="subjectMath">Математика (ҰБТ)</span>
-            <span class="tab-count">23</span>
+            <span class="tab-count">43</span>
           </button>
         </div>
 
@@ -160,35 +253,35 @@
         <div class="topics-row" id="topics-row">
           <button class="topic-pill active" data-topic="all">
             <span data-i18n="topicAll">Барлық тақырыптар</span>
-            <span class="pill-count">40</span>
+            <span class="pill-count">85</span>
           </button>
           <button class="topic-pill" data-topic="Алгебра" data-subject="math">
             <span data-i18n="topicAlgebra">Алгебра</span>
-            <span class="pill-count">10</span>
+            <span class="pill-count">20</span>
           </button>
           <button class="topic-pill" data-topic="Геометрия" data-subject="math">
             <span data-i18n="topicGeometry">Геометрия</span>
-            <span class="pill-count">8</span>
+            <span class="pill-count">17</span>
           </button>
           <button class="topic-pill" data-topic="Тригонометрия" data-subject="math">
             <span data-i18n="topicTrig">Тригонометрия</span>
-            <span class="pill-count">5</span>
+            <span class="pill-count">6</span>
           </button>
           <button class="topic-pill" data-topic="Механика" data-subject="physics">
             <span data-i18n="topicMechanics">Механика</span>
-            <span class="pill-count">9</span>
+            <span class="pill-count">19</span>
           </button>
           <button class="topic-pill" data-topic="Электродинамика" data-subject="physics">
             <span data-i18n="topicElectrodynamics">Электродинамика</span>
-            <span class="pill-count">4</span>
+            <span class="pill-count">10</span>
           </button>
           <button class="topic-pill" data-topic="Термодинамика" data-subject="physics">
             <span data-i18n="topicThermodynamics">Термодинамика</span>
-            <span class="pill-count">3</span>
+            <span class="pill-count">7</span>
           </button>
           <button class="topic-pill" data-topic="Оптика" data-subject="physics">
             <span data-i18n="topicOptics">Оптика</span>
-            <span class="pill-count">1</span>
+            <span class="pill-count">6</span>
           </button>
         </div>
       </div>
